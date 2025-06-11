@@ -168,7 +168,7 @@ async def upstream(event):
             f"I guess you are on selfhost. For self host you need to use `{cmdhd}تحديث الان`",
         )
     event = await edit_or_reply(event, f"ᯓ 𝗦𝗢𝗨𝗥𝗖𝗘 𝗠𝗶𝗸𝘁𝗵𝗼𝗻 - تحـديثـات السـورس\n**•─────────────────•**\n\n**⪼ يتم تنصيب التحديث  انتظر 🌐 ،**")
-    off_repo = "https://github.com/mikthons/Userbot"
+    off_repo = "https://github.com/iSlopk/Mikthon"
     os.chdir("/app")
     try:
         txt = (
