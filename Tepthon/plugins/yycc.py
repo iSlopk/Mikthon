@@ -69,7 +69,7 @@ SONG_SENDING_STRING = "<b>╮ جـارِ تحميـل المقطـٓع الصٓ�
 
 
 def get_cookies_file():
-    folder_path = f"{os.getcwd()}/ASX16c"
+    folder_path = f"{os.getcwd()}/zxaaxc"
     txt_files = glob.glob(os.path.join(folder_path, '*.txt'))
     if not txt_files:
         raise FileNotFoundError("No .txt files found in the specified folder.")
