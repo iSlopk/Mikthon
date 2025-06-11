@@ -1,14 +1,14 @@
 databases:
-  - name: Source
+  - name: Mikthon
     ipAllowList: []
     region: frankfurt
     plan: free
 services:
   - type: web
     plan: free
-    name: Source
+    name: Mikthon
     env: python
-    repo: https://github.com/RRJJB/Source
+    repo: https://github.com/iSlopk/Mikthon
     buildCommand: pip install -U -r requirements.txt
     startCommand: python3 server.py & python3 -m Tepthon
     region: frankfurt
@@ -31,6 +31,6 @@ services:
         value: 3.10.9
       - key: DATABASE_URL
         fromDatabase:
-          name: Source
+          name: Mikthon
           property: connectionString  
   
