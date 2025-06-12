@@ -331,8 +331,8 @@ async def zed_handler(event):
     await zedub.get_me()
     if query.startswith("ميكثون") and event.query.user_id == zedub.uid:
         ZPIC = gvarstatus("ALIVE_PIC")
-        buttons = [[Button.url("سورس ميكثـون العربي - MIKTHON USERBOT", "https://t.me/slopk"),],[Button.url("التحـديثـات", "https://t.me/Shr7Mikthon"), Button.url("الفـارات", "https://t.me/slopke1"),],[Button.url("الشـروحـات¹", "https://t.me/Shr7Mikthon"),],[Button.url("كــلايــش ميكثون", "https://t.me/slopkklaesh"),],[Button.url("مطـور السـورس", "https://t.me/PPF22"),]]
-        if ZPIC and ZPIC.endswith((".jpg", ".png", "gif", "mp4")):
+        buttons = [[Button.url("سورس ميكثـون - Mikthon ", "https://t.me/slopk"),],[Button.url("التحـديثـات", "https://t.me/Shr7Mikthon"), Button.url("الفـارات", "https://t.me/slopke1"),],[Button.url("الشـروحـات¹", "https://t.me/Shr7Mikthon"),],[Button.url("كــلايــش ميكثون", "https://t.me/slopkklaesh"),],[Button.url("مطـور السـورس", "https://t.me/ASX16"),],[Button.url("SXB", "https://sxb16.carrd.co"),]
+if ZPIC and ZPIC.endswith((".jpg", ".png", "gif", "mp4")):
             result = builder.photo(ZPIC,text=Channels, buttons=buttons, link_preview=True)
         elif ZPIC and ZPIC.endswith((".gif", ".mp4")):
             result = builder.document(ZPIC,title="zedub",text=Channels,buttons=buttons,link_preview=True)
