@@ -127,7 +127,7 @@ async def AudioFileToVoiceChat(event):
                 edit = await event.edit('**- جـارِ تشغيـل المقطـٓـع الصـٓـوتي ... 🎧♥️**')
                 filename = await event.client.download_media(message_media.messages[0], 'audio')
                 
-                edit = await event.edit("**- تم التشغيل .. بنجـاح 🎧♥️\n\n- قناة السورس : @ZedThon**")
+                edit = await event.edit("**- تم التشغيل .. بنجـاح 🎧♥️\n\n- قناة السورس : @slop**")
                 try:
                     stream = await JoinThenStreamAudio(f'{event.chat_id}', filename)
                     edit = await event.edit('**⎉╎تم .. بنجـاح☑️**')
@@ -159,7 +159,7 @@ async def VideoFileToVoiceChat(event):
                 edit = await event.edit('**- جـارِ تشغيـل مقطـٓـع الفيـٓـديو ... 🎧♥️**')
                 filename = await event.client.download_media(message_media.messages[0], 'video')
                 
-                edit = await event.edit("**- تم التشغيل .. بنجـاح 🎧♥️\n\n- قناة السورس : @Tepthon**")
+                edit = await event.edit("**- تم التشغيل .. بنجـاح 🎧♥️\n\n- قناة السورس : @slopk**")
                 try:
                     stream = await JoinThenStreamVideo(f'{event.chat_id}', filename)
                     edit = await event.edit('**⎉╎تم .. بنجـاح☑️**')
