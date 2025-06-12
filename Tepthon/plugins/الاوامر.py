@@ -552,3 +552,21 @@ async def repozedub(event):
     await event.delete()
     
     
+    #مخصص
+      if query.startswith("SXB") and event.query.user_id == zedub.uid:
+
+        zelzal = f"**• مرحبآ ** [{zedth2}](tg://user?id={user.id}) \n **• إليك حسابات القوت Shong X Bong | شونق ⬇**"
+
+        buttons = [[Button.url("اضغــط هنــا", "https://sxb16.carrd.co")]]
+        result = builder.article(title="zedub",text=zelzal,buttons=buttons,link_preview=False)
+        await event.answer([result] if result else None)
+@zedub.zed_cmd(pattern="SXB(?: |$)(.*)")
+async def repozedub(event):
+    user, custom = await get_user_from_event(event)
+    if not user:
+        return
+    else:
+    	addgvar("who_id", user)
+    response = await event.client.inline_query(Config.TG_BOT_USERNAME, "SXB")
+    await response[0].click(event.chat_id)
+    await event.delete()
