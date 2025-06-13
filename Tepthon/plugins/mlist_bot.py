@@ -50,7 +50,10 @@ async def send_log(client, text):
 
 async def get_names(client, user_ids):
     names = []
-    for uid})")
+    for uid in user_ids:
+        try:
+            entity = await client.get_entity(uid)
+            names.append(f"- [{entity.first_name}](tg://user?id={uid})")
         except Exception:
             continue
     return names
@@ -100,8 +103,7 @@ async def mlist_in(event):
     if key not in MLIST_DATA:
         MLIST_DATA[key] = set()
     MLIST_DATA[key].add(user_id)
-    await update_mlist_message(event.client, key[0], key[1], key)
-    msg = await event.reply("تم تسجيل حضورك ✅")
+    await update_mlist_message(event.client, key[0],    msg = await event.reply("تم تسجيل حضورك ✅")
     asyncio.create_task(delete_later(msg))
     user = await event.client.get_entity(user_id)
     await send_log(event.client, f"✅ <b>{user.first_name}</b> (<code>{user_id}</code>) قام بتسجيل الحضور.")
@@ -112,7 +114,9 @@ async def mlist_out(event):
     user_id = event.sender_id
     if key not in MLIST_DATA:
         MLIST_DATA[key] = set()
-   _mlist_message(event.client, key[0], key[1], key)
+    if user_id in MLIST_DATA[key]:
+        MLIST_DATA[key].remove(user_id)
+        await update_mlist_message(event.client, key[0], key[1], key)
         msg = await event.reply("تم تسجيل خروجك ❌")
         asyncio.create_task(delete_later(msg))
         user = await event.client.get_entity(user_id)
@@ -131,7 +135,8 @@ async def delete_later(msg):
 @zedub.on(events.CallbackQuery(pattern=r"mlogin\|(-?\d+)\|(\d+)"))
 async def mlogin_handler(event):
     chat_id = int(event.pattern_match.group(1))
-    reply_to = int(event.pattern)
+    reply_to = int(event.pattern_match.group(2))
+    key = (chat_id, reply_to)
     user_id = event.sender_id
     if key not in MLIST_DATA:
         MLIST_DATA[key] = set()
@@ -152,6 +157,8 @@ async def mlogout_handler(event):
     if user_id in MLIST_DATA[key]:
         MLIST_DATA[key].remove(user_id)
         await update_mlist_message(event.client, chat_id, reply_to, key)
-        await event.answer("تم تسجيل خروج f"❌ <b>{user.first_name}</b> (<code>{user_id}</code>) قام بتسجيل الخروج.")
+        await event.answer("تم تسجيل خروجك ❌", alert=False)
+        user = await event.client.get_entity(user_id)
+        await send_log(event.client, f"❌ <b>{user.first_name}</b> (<code>{user_id}</code>) قام بتسجيل الخروج.")
     else:
         await event.answer("أنت لست ضمن القائمة!", alert=False)
