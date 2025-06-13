@@ -1,5 +1,5 @@
 import asyncio
-from telethon import events, Button
+from telethon import events, Button, inline
 
 from . import zedub
 from ..core.managers import edit_or_reply
