@@ -142,7 +142,7 @@ async def mlogin_handler(event):
     await update_mlist_message(event.client, chat_id, reply_to, key)
     await event.answer("تم تسجيل حضورك ✅", alert=False)
     user = await event.client.get_entity(user_id)
-    await send_log(event.client, f"✅ <b>{user.first_name}</code>) قام بتسجيل الحضور.")
+    await send_log(event.client, f"✅ <b>{user.first_name}</b> (<code>{user_id}</code>) قام بتسجيل الحضور.")
 
 @zedub.on(events.CallbackQuery(pattern=r"mlogout\|(-?\d+)\|(\d+)"))
 async def mlogout_handler(event):
