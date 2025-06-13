@@ -40,8 +40,7 @@ def get_log_channel():
     return None
 
 async def send_log(client, text):
-    channel_id = get_log_channel()
-    if not channel_id:
+    channel_id channel_id:
         return
     try:
         await client.send_message(channel_id, text, parse_mode="html")
@@ -103,7 +102,8 @@ async def mlist_in(event):
     if key not in MLIST_DATA:
         MLIST_DATA[key] = set()
     MLIST_DATA[key].add(user_id)
-    await update_mlist_message(event.client, key[0],    msg = await event.reply("تم تسجيل حضورك ✅")
+    await update_mlist_message(event.client, key[0], key[1], key)
+    msg = await event.reply("تم تسجيل حضورك ✅")
     asyncio.create_task(delete_later(msg))
     user = await event.client.get_entity(user_id)
     await send_log(event.client, f"✅ <b>{user.first_name}</b> (<code>{user_id}</code>) قام بتسجيل الحضور.")
@@ -120,7 +120,7 @@ async def mlist_out(event):
         msg = await event.reply("تم تسجيل خروجك ❌")
         asyncio.create_task(delete_later(msg))
         user = await event.client.get_entity(user_id)
-        await send_log(event.client, f"❌ <b>{user.first_name}</b> (<code>{user_id}</code>) قام بتسجيل الخروج.")
+        await send_log(eventb>{user.first_name}</b> (<code>{user_id}</code>) قام بتسجيل الخروج.")
     else:
         msg = await event.reply("أنت لست ضمن القائمة!")
         asyncio.create_task(delete_later(msg))
@@ -144,9 +144,7 @@ async def mlogin_handler(event):
     await update_mlist_message(event.client, chat_id, reply_to, key)
     await event.answer("تم تسجيل حضورك ✅", alert=False)
     user = await event.client.get_entity(user_id)
-    await send_log(event.client, f"✅ <b>{user.first_name}</b> (<code>{user_id}</code>) قام بتسجيل الحضور.")
-
-@zedub.on(events.CallbackQuery(pattern=r"mlogout\|(-?\d+)\|(\d+)"))
+    await send_log(event.client, f"✅ <b>{user.first_name}</b> (<code>{user_id}</code>) قام بتسجيل الحmlogout\|(-?\d+)\|(\d+)"))
 async def mlogout_handler(event):
     chat_id = int(event.pattern_match.group(1))
     reply_to = int(event.pattern_match.group(2))
