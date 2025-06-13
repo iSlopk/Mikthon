@@ -70,7 +70,7 @@ async def autovars(): #Code by T.me/zzzzl1l
     if "ENV" in heroku_var and "TZ" not in heroku_var:
         LOGS.info("جـارِ إضافـة بقيـة الفـارات .. تلقائيًّــا")
         zzcom = "."
-        zzztz = "Asia/Baghdad"
+        zzztz = "Asia/Riyadh"
         heroku_var["COMMAND_HAND_LER"] = zzcom
         heroku_var["TZ"] = zzztz
         LOGS.info("تم إضافـة بقيـة الفـارات .. بنجـاح")
@@ -198,8 +198,8 @@ async def startupmessage():
             Config.ZEDUBLOGO = await zedub.tgbot.send_file(
                 BOTLOG_CHATID,
                 "https://files.catbox.moe/69ko9w.jpg",
-                caption="**•⎆┊تـم بـدء تشغـيل سـورس ميكثـون الخاص بك .. بنجاح 🧸♥️**",
-                buttons=[(Button.url("𝗠𝗶𝗸𝘁𝗵𝗼𝗻 🇵🇸", "https://t.me/slopk"),)],
+                caption="**•⎆┊تـم بـدء تشغـيل سـورس ميكثـون الخاص بك .. بنجاح 🤖🤍**",
+                buttons=[(Button.url("𝗠𝗶𝗸𝘁𝗵𝗼𝗻 🇸🇦", "https://t.me/slopk"),)],
             )
     except Exception as e:
         LOGS.error(e)
@@ -215,7 +215,7 @@ async def startupmessage():
         if msg_details:
             await zedub.check_testcases()
             message = await zedub.get_messages(msg_details[0], ids=msg_details[1])
-            text = message.text + "\n\n**•⎆┊أنا اشتغلـت 🧸♥️**"
+            text = message.text + "\n\n**•⎆┊أنا اشتغلـت 🤖🤍**"
             await zedub.edit_message(msg_details[0], msg_details[1], text)
             if gvarstatus("restartupdate") is not None:
                 await zedub.send_message(
