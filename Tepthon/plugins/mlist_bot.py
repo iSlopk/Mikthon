@@ -8,7 +8,7 @@ plugin_category = "البوت"
 
 MLIST_DATA = {}  # {(chat_id, reply_to_id): set(user_ids)}
 MLIST_MSGS = {}  # {(chat_id, reply_to_id): message_id}
-LOG_CHANNEL_ID = None  # مؤقتاً في الرام، وسنحفظه دائمًا بـ gvar
+# LOG_CHANNEL_ID لم يعد مطلوبًا هنا لأنه أصبح يتم عبر gvar
 
 # --- دعم تعيين قناة اللوق ---
 from ..sql_helper.globals import addgvar, gvarstatus, delgvar
@@ -26,9 +26,7 @@ async def set_log_channel(event):
 
 @zedub.bot_cmd(pattern="^/mdellog$")
 async def del_log_channel(event):
-    if not gvarstatus("mlist_log_channel"):
-        return await event.reply("❗️ لا يوجد قناة لوق معينة مسبقاً.")
-    delgvar("mlist_log_channel")
+    if not gvarstatus("")
     await event.reply("تم إلغاء تعيين قناة اللوق بنجاح.")
 
 def get_log_channel():
@@ -40,8 +38,7 @@ def get_log_channel():
             return None
     return None
 
-async def send_log(client, text):
-    channel_id = get_log_channel()
+async def send_log(client, text get_log_channel()
     if not channel_id:
         return
     try:
@@ -65,8 +62,7 @@ def get_key(event):
 
 async def update_mlist_message(client, chat_id, reply_to, key):
     user_ids = MLIST_DATA.get(key, set())
-    names = await get_names(client, list(user_ids))
-    text = "**قـائـمـة الـمـشـرفـيـن الـحـضـور:**\n" + ("\n".join(names) if names else "_لا يوجد أحد بعد_")
+    names = await get_names:**\n" + ("\n".join(names) if names else "_لا يوجد أحد بعد_")
     btns = [
         [
             Button.inline("Log In 🟢", data=f"mlogin|{chat_id}|{reply_to}"),
@@ -91,7 +87,7 @@ async def mlist_handler(event):
     btns = [
         [
             Button.inline("Log In 🟢", data=f"mlogin|{chat_id}|{reply_to}"),
-            Button.inline("Log Out 🔴out|{chat_id}|{reply_to}")
+            Button.inline("Log Out 🔴", data=f"mlogout|{chat_id}|{reply_to}")
         ]
     ]
     msg = await event.reply(text, buttons=btns, link_preview=False)
@@ -99,7 +95,11 @@ async def mlist_handler(event):
 
 @zedub.bot_cmd(pattern="^/in$")
 async def mlist_in(event):
-    key = get_key(event].add(user_id)
+    key = get_key(event)
+    user_id = event.sender_id
+    if key not in MLIST_DATA:
+        MLIST_DATA[key] = set()
+    MLIST_DATA[key].add(user_id)
     await update_mlist_message(event.client, key[0], key[1], key)
     msg = await event.reply("تم تسجيل حضورك ✅")
     asyncio.create_task(delete_later(msg))
@@ -118,7 +118,7 @@ async def mlist_out(event):
         msg = await event.reply("تم تسجيل خروجك ❌")
         asyncio.create_task(delete_later(msg))
         user = await event.client.get_entity(user_id)
-        await send_log(event.client, f"❌ <b>{user.first_name}</b> (<code>{user_id}</code>) قام بتسجيل الخروج.")
+        await send_log(event.client, f>{user.first_name}</b> (<code>{user_id}</code>) قام بتسجيل الخروج.")
     else:
         msg = await event.reply("أنت لست ضمن القائمة!")
         asyncio.create_task(delete_later(msg))
@@ -133,9 +133,7 @@ async def delete_later(msg):
 @zedub.on(events.CallbackQuery(pattern=r"mlogin\|(-?\d+)\|(\d+)"))
 async def mlogin_handler(event):
     chat_id = int(event.pattern_match.group(1))
-    reply_to = int(event.pattern_match.group(2))
-    key = (chat_id, reply_to)
-    user_id = event.sender_id
+    reply_to = int(event.pattern_match.group(2
     if key not in MLIST_DATA:
         MLIST_DATA[key] = set()
     MLIST_DATA[key].add(user_id)
