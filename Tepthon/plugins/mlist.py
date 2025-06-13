@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-# Plugin: mlist attendance for ZThon
-
 import asyncio
 from telethon import events, Button
 from telethon.tl.types import PeerChannel
@@ -11,7 +9,6 @@ from Tepthon.core.managers import edit_or_reply
 
 plugin_category = "الخدمات"
 
-# تخزين القائمة والرسالة لكل موضوع
 MLIST_DATA = {}  # { (chat_id, topic_id): set(user_ids) }
 MLIST_MSGS = {}  # { (chat_id, topic_id): message_id }
 
@@ -26,9 +23,6 @@ async def get_names(client, user_ids):
     return names
 
 def get_topic_id(event):
-    """
-    استخراج رقم الموضوع (thread_id) من الرسالة أو الرد.
-    """
     if getattr(event, "reply_to_msg_id", None):
         return getattr(event, "reply_to_msg_id", event.id)
     if hasattr(event, "forum_topic_id") and event.forum_topic_id:
@@ -105,7 +99,7 @@ async def mlist_out(event):
     else:
         await edit_or_reply(event, "أنت لست ضمن القائمة!", 5)
 
-@zedub.zedub_bot.on(events.CallbackQuery(pattern=r"mlogin\|(-?\d+)\|(\d+)"))
+@zedub.on(events.CallbackQuery(pattern=r"mlogin\|(-?\d+)\|(\d+)"))
 async def mlogin_handler(event):
     chat_id = int(event.pattern_match.group(1))
     topic_id = int(event.pattern_match.group(2))
@@ -117,9 +111,7 @@ async def mlogin_handler(event):
     await update_mlist_message(event.client, chat_id, topic_id)
     await event.answer("تم تسجيل حضورك ✅", alert=False)
 
-@zedub.zedub_bot.on(events.CallbackQuery(pattern=r"mlogout\|(-?\d+)\|(\d+)"))
-async def mlogout_handler(event):
-    chat_id = int(event.pattern_match.group(1))
+@zedub.on(events = int(event.pattern_match.group(1))
     topic_id = int(event.pattern_match.group(2))
     key = (chat_id, topic_id)
     user_id = event.sender_id
