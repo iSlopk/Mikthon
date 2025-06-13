@@ -8,6 +8,39 @@ plugin_category = "البوت"
 
 MLIST_DATA = {}  # {(chat_id, reply_to_id): set(user_ids)}
 MLIST_MSGS = {}  # {(chat_id, reply_to_id): message_id}
+LOG_CHANNEL_ID = None  # مؤقتاً في الرام، وسنحفظه دائمًا بـ gvar
+
+# --- دعم تعيين قناة اللوق ---
+from ..sql_helper.globals import addgvar, gvarstatus
+
+@zedub.bot_cmd(pattern="^/msetlog$")
+async def set_log_channel(event):
+    if not event.is_reply:
+        return await event.reply("قم بتحويل رسالة من قناة اللوق إلى البوت ثم أرسل الأمر /msetlog بالرد عليها.")
+    reply = await event.get_reply_message()
+    if not getattr(reply, "peer_id", None):
+        return await event.reply("تعذر التعرف على القناة.")
+    chat_id = reply.peer_id.channel_id if hasattr(reply.peer_id, 'channel_id') else reply.chat_id
+    addgvar("mlist_log_channel", str(chat_id))
+    await event.reply(f"✅ تم تعيين قناة اللوق بنجاح: `{chat_id}`")
+
+def get_log_channel():
+    cid = gvarstatus("mlist_log_channel")
+    if cid:
+        try:
+            return int(cid)
+        except Exception:
+            return None
+    return None
+
+async def send_log(client, text):
+    channel_id = get_log_channel()
+    if not channel_id:
+        return
+    try:
+        await client.send_message(channel_id, text, parse_mode="html")
+    except Exception:
+        pass
 
 async def get_names(client, user_ids):
     names = []
@@ -20,14 +53,13 @@ async def get_names(client, user_ids):
     return names
 
 def get_key(event):
-    # مفتاح خاص بكل موضوع (أو برسالة الرد)
     reply_to = event.reply_to_msg_id if getattr(event, "reply_to_msg_id", None) else event.id
     return (event.chat_id, reply_to)
 
 async def update_mlist_message(client, chat_id, reply_to, key):
     user_ids = MLIST_DATA.get(key, set())
     names = await get_names(client, list(user_ids))
-    text = "**قائمة الحضور:**\n" + ("\n".join(names) if names else "_لا يوجد أحد بعد_")
+    text = "**قـائـمـة الـمـشـرفـيـن الـحـضـور:**\n" + ("\n".join(names) if names else "_لا يوجد أحد بعد_")
     btns = [
         [
             Button.inline("Log In 🟢", data=f"mlogin|{chat_id}|{reply_to}"),
@@ -48,7 +80,7 @@ async def mlist_handler(event):
         MLIST_DATA[key] = set()
     chat_id, reply_to = key
     names = await get_names(event.client, list(MLIST_DATA[key]))
-    text = "**قائمة الحضور:**\n" + ("\n".join(names) if names else "_لا يوجد أحد بعد_")
+    text = "**قـائـمـة الـمـشـرفـيـن الـحـضـور:**\n" + ("\n".join(names) if names else "_لا يوجد أحد بعد_")
     btns = [
         [
             Button.inline("Log In 🟢", data=f"mlogin|{chat_id}|{reply_to}"),
@@ -66,7 +98,10 @@ async def mlist_in(event):
         MLIST_DATA[key] = set()
     MLIST_DATA[key].add(user_id)
     await update_mlist_message(event.client, key[0], key[1], key)
-    await event.reply("تم تسجيل حضورك ✅")
+    msg = await event.reply("تم تسجيل حضورك ✅")
+    asyncio.create_task(delete_later(msg))
+    user = await event.client.get_entity(user_id)
+    await send_log(event.client, f"✅ <b>{user.first_name}</b> (<code>{user_id}</code>) قام بتسجيل الحضور.")
 
 @zedub.bot_cmd(pattern="^/out$")
 async def mlist_out(event):
@@ -77,9 +112,20 @@ async def mlist_out(event):
     if user_id in MLIST_DATA[key]:
         MLIST_DATA[key].remove(user_id)
         await update_mlist_message(event.client, key[0], key[1], key)
-        await event.reply("تم تسجيل خروجك ❌")
+        msg = await event.reply("تم تسجيل خروجك ❌")
+        asyncio.create_task(delete_later(msg))
+        user = await event.client.get_entity(user_id)
+        await send_log(event.client, f"❌ <b>{user.first_name}</b> (<code>{user_id}</code>) قام بتسجيل الخروج.")
     else:
-        await event.reply("أنت لست ضمن القائمة!")
+        msg = await event.reply("أنت لست ضمن القائمة!")
+        asyncio.create_task(delete_later(msg))
+
+async def delete_later(msg):
+    await asyncio.sleep(4)
+    try:
+        await msg.delete()
+    except Exception:
+        pass
 
 @zedub.on(events.CallbackQuery(pattern=r"mlogin\|(-?\d+)\|(\d+)"))
 async def mlogin_handler(event):
@@ -92,6 +138,8 @@ async def mlogin_handler(event):
     MLIST_DATA[key].add(user_id)
     await update_mlist_message(event.client, chat_id, reply_to, key)
     await event.answer("تم تسجيل حضورك ✅", alert=False)
+    user = await event.client.get_entity(user_id)
+    await send_log(event.client, f"✅ <b>{user.first_name}</b> (<code>{user_id}</code>) قام بتسجيل الحضور.")
 
 @zedub.on(events.CallbackQuery(pattern=r"mlogout\|(-?\d+)\|(\d+)"))
 async def mlogout_handler(event):
@@ -105,5 +153,7 @@ async def mlogout_handler(event):
         MLIST_DATA[key].remove(user_id)
         await update_mlist_message(event.client, chat_id, reply_to, key)
         await event.answer("تم تسجيل خروجك ❌", alert=False)
+        user = await event.client.get_entity(user_id)
+        await send_log(event.client, f"❌ <b>{user.first_name}</b> (<code>{user_id}</code>) قام بتسجيل الخروج.")
     else:
         await event.answer("أنت لست ضمن القائمة!", alert=False)
