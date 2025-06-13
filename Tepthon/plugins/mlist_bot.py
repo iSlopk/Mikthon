@@ -11,7 +11,7 @@ MLIST_MSGS = {}  # {(chat_id, reply_to_id): message_id}
 LOG_CHANNEL_ID = None  # مؤقتاً في الرام، وسنحفظه دائمًا بـ gvar
 
 # --- دعم تعيين قناة اللوق ---
-from ..sql_helper.globals import addgvar, gvarstatus, delgvar
+from ..sql_helper.globals import addgvar, gvarstatus
 
 @zedub.bot_cmd(pattern="^/msetlog$")
 async def set_log_channel(event):
@@ -23,13 +23,6 @@ async def set_log_channel(event):
     chat_id = reply.peer_id.channel_id if hasattr(reply.peer_id, 'channel_id') else reply.chat_id
     addgvar("mlist_log_channel", str(chat_id))
     await event.reply(f"✅ تم تعيين قناة اللوق بنجاح: `{chat_id}`")
-
-@zedub.bot_cmd(pattern="^/mdellog$")
-async def del_log_channel(event):
-    if not gvarstatus("mlist_log_channel"):
-        return await event.reply("❗️ لا يوجد قناة لوق معينة مسبقاً.")
-    delgvar("mlist_log_channel")
-    await event.reply("تم إلغاء تعيين قناة اللوق بنجاح.")
 
 def get_log_channel():
     cid = gvarstatus("mlist_log_channel")
@@ -87,7 +80,10 @@ async def mlist_handler(event):
         MLIST_DATA[key] = set()
     chat_id, reply_to = key
     names = await get_names(event.client, list(MLIST_DATA[key]))
-    text = "**قـائـمـة الـمـشـرفـيـن الـحـض("Log In 🟢", data=f"mlogin|{chat_id}|{reply_to}"),
+    text = "**قـائـمـة الـمـشـرفـيـن الـحـضـور:**\n" + ("\n".join(names) if names else "_لا يوجد أحد بعد_")
+    btns = [
+        [
+            Button.inline("Log In 🟢", data=f"mlogin|{chat_id}|{reply_to}"),
             Button.inline("Log Out 🔴", data=f"mlogout|{chat_id}|{reply_to}")
         ]
     ]
@@ -100,7 +96,8 @@ async def mlist_in(event):
     user_id = event.sender_id
     if key not in MLIST_DATA:
         MLIST_DATA[key] = set()
-    MLIST_id    await update_mlist_message(event.client, key[0], key[1], key)
+    MLIST_DATA[key].add(user_id)
+    await update_mlist_message(event.client, key[0], key[1], key)
     msg = await event.reply("تم تسجيل حضورك ✅")
     asyncio.create_task(delete_later(msg))
     user = await event.client.get_entity(user_id)
