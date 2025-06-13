@@ -11,7 +11,7 @@ MLIST_MSGS = {}  # {(chat_id, reply_to_id): message_id}
 LOG_CHANNEL_ID = None  # مؤقتاً في الرام، وسنحفظه دائمًا بـ gvar
 
 # --- دعم تعيين قناة اللوق ---
-from ..sql_helper.globals import addgvar, gvarstatus
+from ..sql_helper.globals import addgvar, gvarstatus, delgvar
 
 @zedub.bot_cmd(pattern="^/msetlog$")
 async def set_log_channel(event):
@@ -23,6 +23,13 @@ async def set_log_channel(event):
     chat_id = reply.peer_id.channel_id if hasattr(reply.peer_id, 'channel_id') else reply.chat_id
     addgvar("mlist_log_channel", str(chat_id))
     await event.reply(f"✅ تم تعيين قناة اللوق بنجاح: `{chat_id}`")
+
+@zedub.bot_cmd(pattern="^/mdellog$")
+async def del_log_channel(event):
+    if not gvarstatus("mlist_log_channel"):
+        return await event.reply("❗️ لا يوجد قناة لوق معينة مسبقاً.")
+    delgvar("mlist_log_channel")
+    await event.reply("تم إلغاء تعيين قناة اللوق بنجاح.")
 
 def get_log_channel():
     cid = gvarstatus("mlist_log_channel")
@@ -123,11 +130,7 @@ async def mlist_out(event):
 async def delete_later(msg):
     await asyncio.sleep(4)
     try:
-        await msg.delete()
-    except Exception:
-        pass
-
-@zedub.on(events.CallbackQuery(pattern=r"mlogin\|(-?\d+)\|(\d+)"))
+        await(events.CallbackQuery(pattern=r"mlogin\|(-?\d+)\|(\d+)"))
 async def mlogin_handler(event):
     chat_id = int(event.pattern_match.group(1))
     reply_to = int(event.pattern_match.group(2))
