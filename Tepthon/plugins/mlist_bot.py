@@ -131,7 +131,7 @@ async def delete_later(msg):
     await asyncio.sleep(4)
     try:
         await(events.CallbackQuery(pattern=r"mlogin\|(-?\d+)\|(\d+)"))
- async def mlogin_handler(event):
+async def mlogin_handler(event):
     chat_id = int(event.pattern_match.group(1))
     reply_to = int(event.pattern_match.group(2))
     key = (chat_id, reply_to)
