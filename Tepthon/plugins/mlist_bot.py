@@ -91,7 +91,7 @@ async def mlist_handler(event):
     btns = [
         [
             Button.inline("Log In 🟢", data=f"mlogin|{chat_id}|{reply_to}"),
-            Button.inline("Log Out 🔴", data=f"mlogout|{chat_id}|{reply_to}")
+            Button.inline("Log Out 🔴out|{chat_id}|{reply_to}")
         ]
     ]
     msg = await event.reply(text, buttons=btns, link_preview=False)
@@ -99,11 +99,7 @@ async def mlist_handler(event):
 
 @zedub.bot_cmd(pattern="^/in$")
 async def mlist_in(event):
-    key = get_key(event)
-    user_id = event.sender_id
-    if key not in MLIST_DATA:
-        MLIST_DATA[key] = set()
-    MLIST_DATA[key].add(user_id)
+    key = get_key(event].add(user_id)
     await update_mlist_message(event.client, key[0], key[1], key)
     msg = await event.reply("تم تسجيل حضورك ✅")
     asyncio.create_task(delete_later(msg))
@@ -130,7 +126,11 @@ async def mlist_out(event):
 async def delete_later(msg):
     await asyncio.sleep(4)
     try:
-        await(events.CallbackQuery(pattern=r"mlogin\|(-?\d+)\|(\d+)"))
+        await msg.delete()
+    except Exception:
+        pass
+
+@zedub.on(events.CallbackQuery(pattern=r"mlogin\|(-?\d+)\|(\d+)"))
 async def mlogin_handler(event):
     chat_id = int(event.pattern_match.group(1))
     reply_to = int(event.pattern_match.group(2))
