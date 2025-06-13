@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import asyncio
 from telethon import events, Button
-from telethon.tl.types import PeerChannel
 
 from Tepthon import zedub
 from Tepthon.core.logger import logging
@@ -38,8 +37,10 @@ async def update_mlist_message(client, chat_id, topic_id):
     text = "**قائمة الحضور:**\n"
     text += "\n".join(names) if names else "_لا يوجد أحد بعد_"
     btns = [
-        [Button.inline("Log In 🟢", data=f"mlogin|{chat_id}|{topic_id}"),
-         Button.inline("Log Out 🔴", data=f"mlogout|{chat_id}|{topic_id}")]
+        [
+            Button.inline("Log In 🟢", data=f"mlogin|{chat_id}|{topic_id}"),
+            Button.inline("Log Out 🔴", data=f"mlogout|{chat_id}|{topic_id}")
+        ]
     ]
     try:
         msg_id = MLIST_MSGS.get(key)
@@ -66,8 +67,10 @@ async def mlist_handler(event):
     text = "**قائمة الحضور:**\n"
     text += "\n".join(names) if names else "_لا يوجد أحد بعد_"
     btns = [
-        [Button.inline("Log In 🟢", data=f"mlogin|{chat_id}|{topic_id}"),
-         Button.inline("Log Out 🔴", data=f"mlogout|{chat_id}|{topic_id}")]
+        [
+            Button.inline("Log In 🟢", data=f"mlogin|{chat_id}|{topic_id}"),
+            Button.inline("Log Out 🔴", data=f"mlogout|{chat_id}|{topic_id}")
+        ]
     ]
     msg = await event.respond(text, buttons=btns, reply_to=topic_id, link_preview=False)
     MLIST_MSGS[key] = msg.id
@@ -111,7 +114,9 @@ async def mlogin_handler(event):
     await update_mlist_message(event.client, chat_id, topic_id)
     await event.answer("تم تسجيل حضورك ✅", alert=False)
 
-@zedub.on(events = int(event.pattern_match.group(1))
+@zedub.on(events.CallbackQuery(pattern=r"mlogout\|(-?\d+)\|(\d+)"))
+async def mlogout_handler(event):
+    chat_id = int(event.pattern_match.group(1))
     topic_id = int(event.pattern_match.group(2))
     key = (chat_id, topic_id)
     user_id = event.sender_id
