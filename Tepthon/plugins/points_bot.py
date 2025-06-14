@@ -93,21 +93,32 @@ async def points_manage(event):
     args = event.pattern_match.group(1)
     args = args.split() if args else []
     cmd = event.text.split()[0].lower().replace(cmhd, "/")
-    points = 1
+  """  points = 1
 
     # استخراج النقاط إذا وُجدت
     if len(args) > 1:
         try:
             points = abs(int(args[1]))
         except Exception:
-            pass
+            pass"""
 
-    # جلب user_id
+       points = 1
+
+     if len(args) > 1:
+       try:
+           points = abs(int(args[1]))
+       except Exception:
+           pass
+     elif event.is_reply and args:
+       try:
+           points = abs(int(args[0]))
+    except Exception:
+        pass
+      
     uid = await get_user_id(event, args)
     if uid is None:
         return await safe_edit_or_reply(event, "يرجى تحديد المستخدم بالرد أو المنشن أو الإيدي.")
 
-    # عمليات النقاط عبر قاعدة البيانات
     old = get_points(event.chat_id, uid)
     if cmd == "/p":
         new_points = old + points
@@ -128,7 +139,7 @@ async def show_points(event):
     uid = await get_user_id(event, args)
     ranking = get_all_points(event.chat_id)
     if uid is None:
-        # عرض الجميع بدون حد
+        
         if not ranking:
             return await safe_edit_or_reply(event, "لا يوجد نقاط مسجلة في هذه المجموعة.")
         text = "**ترتيب النقاط في المجموعة:**\n"
