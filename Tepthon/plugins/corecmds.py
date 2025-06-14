@@ -5,7 +5,9 @@ from pathlib import Path
 from ..Config import Config
 from ..core import CMD_INFO, PLG_INFO
 from ..utils import Zed_Dev, load_module, remove_plugin
-from . import CMD_HELP, CMD_LIST, SUDO_LIST, zedub, edit_delete, edit_or_reply, reply_id
+from . import CMD_HELP, CMD_LIST, SUDO_LIST, edit_delete, edit_or_reply, reply_id
+from Tepthon import zedub
+
 
 plugin_category = "الادوات"
 
