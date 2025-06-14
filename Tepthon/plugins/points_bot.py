@@ -13,13 +13,17 @@ POINTS_DATA = {}  # {chat_id: {user_id: points}}
 
 
 async def safe_edit_or_reply(event, text, **kwargs):
+    """دالة للرد أو التعديل)."""
     try:
         await edit_or_reply(event, text, **kwargs)
     except MessageAuthorRequiredError:
         await event.reply(text, **kwargs)
 
 
-()
+async def get_user_id(event, args):
+    """جلب ID المستخدم حسب الرد أو المنشن أو الإيدي."""
+    if event.is_reply:
+        reply = await event.get_reply_message()
         return reply.sender_id
     if args:
         if args[0].startswith("@"):
@@ -37,25 +41,28 @@ async def safe_edit_or_reply(event, text, **kwargs):
 
 @zedub.bot_cmd(pattern=fr"^(?:{cmhd}addp|{cmhd}disp)(?:\s+(.+))?$")
 async def points_manage(event):
+    """إضافة أو خصم نقاط"""
     if not event.is_group:
-        return await safe_edit_or_reply(event, "❗️يعمل فقط في المجموعات.")
-    perms = await event.client.get_permissions(event.chat_id, event.sender_id)
-    if not perms.is_admin:
+        return await safe_edit_or_reply(event, ".is_admin:
         return await safe_edit_or_reply(event, "❗️الأمر متاح للمشرفين فقط.")
     args = event.pattern_match.group(1)
     args = args.split() if args else []
     cmd = event.text.split()[0].lower().replace(cmhd, "/")
     points = 1
 
+    # استخراج النقاط إذا وُجدت
     if len(args) > 1:
         try:
             points = abs(int(args[1]))
         except Exception:
             pass
 
-    uid = await get_user_id(event, args None:
+    # جلب user_id
+    uid = await get_user_id(event, args)
+    if uid is None:
         return await safe_edit_or_reply(event, "يرجى تحديد المستخدم بالرد أو المنشن أو الإيدي.")
 
+    # ضبط الداتا
     chat_points = POINTS_DATA.setdefault(event.chat_id, {})
     old = chat_points.get(uid, 0)
     if cmd == "/addp":
@@ -63,20 +70,31 @@ async def points_manage(event):
         await safe_edit_or_reply(event, f"✅ تم إضافة {points} نقطة.\nرصيد المستخدم الآن: {chat_points[uid]}")
     else:
         chat_points[uid] = max(old - points, 0)
-        await safe_edit_or_reply(event, f"❌ تم]}")
+        await safe_edit_or_reply(event, f"❌ تم خصم {points} نقطة.\nرصيد المستخدم الآن: {chat_points[uid]}")
 
 
 @zedub.bot_cmd(pattern=fr"^(?:{cmhd}ps|{cmhd}points)(?:\s+(.+))?$")
 async def show_points(event):
+    """عرض النقاط"""
     if not event.is_group:
-        return await safe_edit_or_reply(event, "❗️يعمل فقط في المجموعات_points.items(), key=lambda x: x[1], reverse=True)
+        return await safe_edit_or_reply(event, "❗️يعمل فقط في المجموعات.")
+    args = event.pattern_match.group(1)
+    args = args.split() if args else []
+    uid = await get_user_id(event, args)
+    chat_points = POINTS_DATA.get(event.chat_id, {})
+    if uid is None:
+        # عرض الجميع بدون حد
+        ranking = sorted(chat_points.items(), key=lambda x: x[1], reverse=True)
         if not ranking:
-            return await safe_edit_or_reply(event, "لا يوجد نقاط مسجلة في هذه المجموعة.")
+            return await safe_edit_or_reply(event, " نقاط مسجلة في هذه المجموعة.")
         text = "**ترتيب النقاط في المجموعة:**\n"
         for i, (uid, pts) in enumerate(ranking, 1):
             try:
                 user = await event.client.get_entity(uid)
-                name = user.first_name - {pts}\n"
+                name = user.first_name
+            except Exception:
+                name = str(uid)
+            text += f"{i}. [{name}](tg://user?id={uid}) - {pts}\n"
         await safe_edit_or_reply(event, text)
     else:
         pts = chat_points.get(uid, 0)
@@ -89,10 +107,10 @@ async def show_points(event):
 
 
 @zedub.bot_cmd(pattern=fr"^{cmhd}resetp$")
-async def reset_points(event):
+async def reset """إعادة جميع النقاط إلى صفر"""
     if not event.is_group:
         return await safe_edit_or_reply(event, "❗️يعمل فقط في المجموعات.")
-    perms = await event.client(event.chat_id, event.sender_id)
+    perms = await event.client.get_permissions(event.chat_id, event.sender_id)
     if not perms.is_admin:
         return await safe_edit_or_reply(event, "❗️الأمر متاح للمشرفين فقط.")
     if event.chat_id in POINTS_DATA and POINTS_DATA[event.chat_id]:
