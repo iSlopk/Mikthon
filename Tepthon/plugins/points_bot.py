@@ -116,7 +116,7 @@ async def points_manage(event):
     else:
         new_points = max(old - points, 0)
         set_points(event.chat_id, uid, new_points)
-        await safe_edit_or_reply(event, f"❌ تم خصم {points} نقطة.\n \n👤 المستخدم : [{name}](tg://user?id={user_id}\n🔢 عدد النقاط : [{new_points}]")
+        await safe_edit_or_reply(event, f"❌ تم خصم {points} نقطة.\n👤 المستخدم : [{name}](tg://user?id)={user_id}\n🔢 عدد النقاط : [{new_points}]")
 
 @zedub.bot_cmd(pattern=fr"^(?:{cmhd}ps|{cmhd}points)(?:\s+(.+))?$")
 async def show_points(event):
