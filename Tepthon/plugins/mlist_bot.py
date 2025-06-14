@@ -1,8 +1,14 @@
 import asyncio
-from telethon import events, Button
+from telethon import events, Button, functions
+from telethon.events import CallbackQuery, InlineQuery
 
 from . import zedub
-from ..core.managers import edit_or_reply
+from ..core.logger import logging
+from ..core.managers import edit_delete, edit_or_reply
+from ..sql_helper.globals import addgvar, delgvar, gvarstatus
+from . import BOTLOG, BOTLOG_CHATID
+from pySmartDL import SmartDL
+
 
 plugin_category = "البوت"
 
@@ -10,8 +16,9 @@ MLIST_DATA = {}  # {(chat_id, reply_to_id): set(user_ids)}
 MLIST_MSGS = {}  # {(chat_id, reply_to_id): message_id}
 LOG_CHANNEL_ID = None  # مؤقتاً في الرام، وسنحفظه دائمًا بـ gvar
 
-# --- دعم تعيين قناة اللوق ---
-from ..sql_helper.globals import addgvar, gvarstatus
+plugin_category = "البوت"
+botusername = Config.TG_BOT_USERNAME
+cmhd = Config.COMMAND_HAND_LER
 
 @zedub.bot_cmd(pattern="^/msetlog$")
 async def set_log_channel(event):
@@ -62,8 +69,8 @@ async def update_mlist_message(client, chat_id, reply_to, key):
     text = "**قـائـمـة الـمـشـرفـيـن الـحـضـور:**\n" + ("\n".join(names) if names else "_لا يوجد أحد بعد_")
     btns = [
         [
-            Button.inline("Log In 🟢", data=f"mlist_in|{chat_id}|{reply_to}"),
-            Button.inline("Log Out 🔴", data=f"mlist_out|{chat_id}|{reply_to}")
+            Button.inline("Log In 🟢", data=f"mlogin|{chat_id}|{reply_to}"),
+            Button.inline("Log Out 🔴", data=f"mlogout|{chat_id}|{reply_to}")
         ]
     ]
     try:
@@ -83,8 +90,8 @@ async def mlist_handler(event):
     text = "**قـائـمـة الـمـشـرفـيـن الـحـضـور:**\n" + ("\n".join(names) if names else "_لا يوجد أحد بعد_")
     btns = [
         [
-            Button.inline("Log In 🟢", data=f"mlist_in|{chat_id}|{reply_to}"),
-            Button.inline("Log Out 🔴", data=f"mlist_out|{chat_id}|{reply_to}")
+            Button.inline("Log In 🟢", data=f"mlogin|{chat_id}|{reply_to}"),
+            Button.inline("Log Out 🔴", data=f"mlogout|{chat_id}|{reply_to}")
         ]
     ]
     msg = await event.reply(text, buttons=btns, link_preview=False)
@@ -127,8 +134,8 @@ async def delete_later(msg):
     except Exception:
         pass
 
-@zedub.on(events.CallbackQuery(pattern=r"mlist_in\|(-?\d+)\|(\d+)"))
-async def mlist_in_handler(event):
+@zedub.tgbot.on(events.CallbackQuery(pattern=r"mlogin\|(-?\d+)\|(\d+)"))
+async def mlogin_handler(event):
     chat_id = int(event.pattern_match.group(1))
     reply_to = int(event.pattern_match.group(2))
     key = (chat_id, reply_to)
@@ -141,8 +148,8 @@ async def mlist_in_handler(event):
     user = await event.client.get_entity(user_id)
     await send_log(event.client, f"✅ <b>{user.first_name}</b> (<code>{user_id}</code>) قام بتسجيل الحضور.")
 
-@zedub.on(events.CallbackQuery(pattern=r"mlist_out\|(-?\d+)\|(\d+)"))
-async def mlist_out_handler(event):
+@zedub.tgbot.on(events.CallbackQuery(pattern=r"mlogout\|(-?\d+)\|(\d+)"))
+async def mlogout_handler(event):
     chat_id = int(event.pattern_match.group(1))
     reply_to = int(event.pattern_match.group(2))
     key = (chat_id, reply_to)
