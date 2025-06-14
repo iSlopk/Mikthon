@@ -177,4 +177,4 @@ async def reset_points(event):
         reset_all_points(event.chat_id)
         await safe_edit_or_reply(event, "✅ تم ترسيت نقاط الشات.")
     else:
-        await safe_edit_or_reply(event, "لا يوجد نقاط مسجلة حالياً.")
+        await safe_edit_or_reply(event, "🍃 لا يوجد نقاط مسجلة حالياً.")
