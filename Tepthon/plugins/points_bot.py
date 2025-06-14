@@ -141,8 +141,8 @@ async def show_points(event):
     if uid is None:
         
         if not ranking:
-            return await safe_edit_or_reply(event, "لا يوجد نقاط مسجلة في هذه المجموعة.")
-        text = "**ترتيب النقاط في المجموعة:**\n"
+            return await safe_edit_or_reply(event, "🍃 لا يوجد نقاط مسجلة في الشات.")
+        text = "**📊 | نشرة النقاط في المجموعة:**\n"
         for i, (user_id, pts) in enumerate(ranking, 1):
             try:
                 user = await event.client.get_entity(user_id)
