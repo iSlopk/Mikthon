@@ -135,7 +135,9 @@ async def show_points(event):
         for i, (user_id, pts) in enumerate(ranking, 1):
             try:
                 user = await event.client.get_entity(user_id)
-                name = user.first_name
+                
+                name = user.first_name + (" " + user.last_name if user.last_name else "")
+                
             except Exception:
                 name = str(user_id)
             text += f"{i}- [{name}](tg://user?id={user_id}) [{pts}]\n"
@@ -144,7 +146,9 @@ async def show_points(event):
         pts = get_points(event.chat_id, uid)
         try:
             user = await event.client.get_entity(uid)
-            name = user.first_name
+            
+            name = user.first_name + (" " + user.last_name if user.last_name else "")
+            
         except Exception:
             name = str(uid)
         await safe_edit_or_reply(event, f"رصيد [{name}](tg://user?id={uid}): {pts} نقطة.")
