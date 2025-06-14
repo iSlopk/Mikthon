@@ -17,7 +17,16 @@ def get_db():
 
 def create_table():
     with get_db() as db:
-        db.execute_id):
+        db.execute("""
+        CREATE TABLE IF NOT EXISTS points (
+            chat_id INTEGER,
+            user_id INTEGER,
+            points INTEGER,
+            PRIMARY KEY (chat_id, user_id)
+        )""")
+create_table()
+
+def get_points(chat_id, user_id):
     with get_db() as db:
         cur = db.execute(
             "SELECT points FROM points WHERE chat_id=? AND user_id=?",
@@ -26,7 +35,16 @@ def create_table():
         row = cur.fetchone()
         return row[0] if row else 0
 
-def set_points(chat_id, user cur = db.execute(
+def set_points(chat_id, user_id, points):
+    with get_db() as db:
+        db.execute(
+            "INSERT OR REPLACE INTO points (chat_id, user_id, points) VALUES (?, ?, ?)",
+            (chat_id, user_id, points)
+        )
+
+def get_all_points(chat_id):
+    with get_db() as db:
+        cur = db.execute(
             "SELECT user_id, points FROM points WHERE chat_id=? ORDER BY points DESC",
             (chat_id,)
         )
@@ -62,7 +80,9 @@ async def get_user_id(event, args):
             return int(args[0])
         except Exception:
             pass
-   disp)(?:\s+(.+))?$")
+    return None
+
+@zedub.bot_cmd(pattern=fr"^(?:{cmhd}addp|{cmhd}disp)(?:\s+(.+))?$")
 async def points_manage(event):
     """إضافة أو خصم نقاط"""
     if not event.is_group:
@@ -96,14 +116,21 @@ async def points_manage(event):
     else:
         new_points = max(old - points, 0)
         set_points(event.chat_id, uid, new_points)
-        await safe_edit_or_reply(event, f"❌ تم خصم {points} نقطة.\nرصيد المستخدم الآن:?$")
+        await safe_edit_or_reply(event, f"❌ تم خصم {points} نقطة.\nرصيد المستخدم الآن: {new_points}")
+
+@zedub.bot_cmd(pattern=fr"^(?:{cmhd}ps|{cmhd}points)(?:\s+(.+))?$")
 async def show_points(event):
     """عرض النقاط"""
     if not event.is_group:
         return await safe_edit_or_reply(event, "❗️يعمل فقط في المجموعات.")
     args = event.pattern_match.group(1)
     args = args.split() if args else []
-    uid = await get_user_id(event, args, "لا يوجد نقاط مسجلة في هذه المجموعة.")
+    uid = await get_user_id(event, args)
+    ranking = get_all_points(event.chat_id)
+    if uid is None:
+        # عرض الجميع بدون حد
+        if not ranking:
+            return await safe_edit_or_reply(event, "لا يوجد نقاط مسجلة في هذه المجموعة.")
         text = "**ترتيب النقاط في المجموعة:**\n"
         for i, (user_id, pts) in enumerate(ranking, 1):
             try:
@@ -116,7 +143,11 @@ async def show_points(event):
     else:
         pts = get_points(event.chat_id, uid)
         try:
-            username}](tg://user?id={uid}): {pts} نقطة.")
+            user = await event.client.get_entity(uid)
+            name = user.first_name
+        except Exception:
+            name = str(uid)
+        await safe_edit_or_reply(event, f"رصيد [{name}](tg://user?id={uid}): {pts} نقطة.")
 
 @zedub.bot_cmd(pattern=fr"^{cmhd}resetp$")
 async def reset_points(event):
