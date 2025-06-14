@@ -93,15 +93,7 @@ async def points_manage(event):
     args = event.pattern_match.group(1)
     args = args.split() if args else []
     cmd = event.text.split()[0].lower().replace(cmhd, "/")
-  """  points = 1
-
-    # استخراج النقاط إذا وُجدت
-    if len(args) > 1:
-        try:
-            points = abs(int(args[1]))
-        except Exception:
-            pass"""
-
+     
        points = 1
 
      if len(args) > 1:
