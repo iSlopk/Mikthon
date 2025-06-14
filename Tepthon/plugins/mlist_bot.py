@@ -6,48 +6,16 @@ from . import zedub
 from ..core.logger import logging
 from ..core.managers import edit_delete, edit_or_reply
 from ..sql_helper.globals import addgvar, delgvar, gvarstatus
-from . import BOTLOG, BOTLOG_CHATID
 from pySmartDL import SmartDL
 
 
-plugin_category = "البوت"
-
 MLIST_DATA = {}  # {(chat_id, reply_to_id): set(user_ids)}
 MLIST_MSGS = {}  # {(chat_id, reply_to_id): message_id}
-LOG_CHANNEL_ID = None  # مؤقتاً في الرام، وسنحفظه دائمًا بـ gvar
 
 plugin_category = "البوت"
 botusername = Config.TG_BOT_USERNAME
 cmhd = Config.COMMAND_HAND_LER
 
-@zedub.bot_cmd(pattern="^/msetlog$")
-async def set_log_channel(event):
-    if not event.is_reply:
-        return await event.reply("قم بتحويل رسالة من قناة اللوق إلى البوت ثم أرسل الأمر /msetlog بالرد عليها.")
-    reply = await event.get_reply_message()
-    if not getattr(reply, "peer_id", None):
-        return await event.reply("تعذر التعرف على القناة.")
-    chat_id = reply.peer_id.channel_id if hasattr(reply.peer_id, 'channel_id') else reply.chat_id
-    addgvar("mlist_log_channel", str(chat_id))
-    await event.reply(f"✅ تم تعيين قناة اللوق بنجاح: `{chat_id}`")
-
-def get_log_channel():
-    cid = gvarstatus("mlist_log_channel")
-    if cid:
-        try:
-            return int(cid)
-        except Exception:
-            return None
-    return None
-
-async def send_log(client, text):
-    channel_id = get_log_channel()
-    if not channel_id:
-        return
-    try:
-        await client.send_message(channel_id, text, parse_mode="html")
-    except Exception:
-        pass
 
 async def get_names(client, user_ids):
     names = []
@@ -108,7 +76,7 @@ async def mlist_in(event):
     msg = await event.reply("تم تسجيل حضورك ✅")
     asyncio.create_task(delete_later(msg))
     user = await event.client.get_entity(user_id)
-    await send_log(event.client, f"✅ <b>{user.first_name}</b> (<code>{user_id}</code>) قام بتسجيل الحضور.")
+
 
 @zedub.bot_cmd(pattern="^/out$")
 async def mlist_out(event):
@@ -122,7 +90,7 @@ async def mlist_out(event):
         msg = await event.reply("تم تسجيل خروجك ❌")
         asyncio.create_task(delete_later(msg))
         user = await event.client.get_entity(user_id)
-        await send_log(event.client, f"❌ <b>{user.first_name}</b> (<code>{user_id}</code>) قام بتسجيل الخروج.")
+
     else:
         msg = await event.reply("أنت لست ضمن القائمة!")
         asyncio.create_task(delete_later(msg))
@@ -146,7 +114,6 @@ async def mlogin_handler(event):
     await update_mlist_message(event.client, chat_id, reply_to, key)
     await event.answer("تم تسجيل حضورك ✅", alert=False)
     user = await event.client.get_entity(user_id)
-    await send_log(event.client, f"✅ <b>{user.first_name}</b> (<code>{user_id}</code>) قام بتسجيل الحضور.")
 
 @zedub.tgbot.on(events.CallbackQuery(pattern=r"mlogout\|(-?\d+)\|(\d+)"))
 async def mlogout_handler(event):
@@ -161,6 +128,5 @@ async def mlogout_handler(event):
         await update_mlist_message(event.client, chat_id, reply_to, key)
         await event.answer("تم تسجيل خروجك ❌", alert=False)
         user = await event.client.get_entity(user_id)
-        await send_log(event.client, f"❌ <b>{user.first_name}</b> (<code>{user_id}</code>) قام بتسجيل الخروج.")
     else:
         await event.answer("أنت لست ضمن القائمة!", alert=False)
