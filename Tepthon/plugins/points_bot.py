@@ -82,7 +82,7 @@ async def get_user_id(event, args):
             pass
     return None
 
-@zedub.bot_cmd(pattern=fr"^(?:{cmhd}اضف|{cmhd}خصم)(?:\s+(.+))?$")
+@zedub.bot_cmd(pattern=fr"^(?:{cmhd}addp|{cmhd}disp)(?:\s+(.+))?$")
 async def points_manage(event):
     """إضافة أو خصم نقاط"""
     if not event.is_group:
@@ -92,7 +92,7 @@ async def points_manage(event):
         return await safe_edit_or_reply(event, "❗️الأمر متاح للمشرفين فقط.")
     args = event.pattern_match.group(1)
     args = args.split() if args else []
-    cmd = event.text.split()[0].lower().replace(cmhd, "#")
+    cmd = event.text.split()[0].lower().replace(cmhd, "/")
     points = 1
 
     # استخراج النقاط إذا وُجدت
@@ -109,16 +109,16 @@ async def points_manage(event):
 
     # عمليات النقاط عبر قاعدة البيانات
     old = get_points(event.chat_id, uid)
-    if cmd == "#اضف":
+    if cmd == "/addp":
         new_points = old + points
         set_points(event.chat_id, uid, new_points)
-        await safe_edit_or_reply(event, f"✅ تم إضافة {points} نقطة.\nنقاط [{name}](tg://user?id={user_id}) الآن: {new_points}")
+        await safe_edit_or_reply(event, f"✅ تم إضافة {points} نقطة.\nرصيد المستخدم الآن: {new_points}")
     else:
         new_points = max(old - points, 0)
         set_points(event.chat_id, uid, new_points)
-        await safe_edit_or_reply(event, f"❌ تم خصم {points} نقطة.\nنقاط [{name}](tg://user?id={user_id}) الآن: {new_points}")
+        await safe_edit_or_reply(event, f"❌ تم خصم {points} نقطة.\nرصيد المستخدم الآن: {new_points}")
 
-@zedub.bot_cmd(pattern=fr"^(?:{cmhd}ps|{cmhd}points|{cmhd}النقاط)(?:\s+(.+))?$")
+@zedub.bot_cmd(pattern=fr"^(?:{cmhd}ps|{cmhd}points)(?:\s+(.+))?$")
 async def show_points(event):
     """عرض النقاط"""
     if not event.is_group:
@@ -138,7 +138,7 @@ async def show_points(event):
                 name = user.first_name
             except Exception:
                 name = str(user_id)
-            text += f"{i}. [{name}](tg://user?id={user_id}) » {pts}\n"
+            text += f"{i}. [{name}](tg://user?id={user_id}) - {pts}\n"
         await safe_edit_or_reply(event, text)
     else:
         pts = get_points(event.chat_id, uid)
@@ -147,9 +147,9 @@ async def show_points(event):
             name = user.first_name
         except Exception:
             name = str(uid)
-        await safe_edit_or_reply(event, f"نقاط [{name}](tg://user?id={uid}): {pts} نقطة.")
+        await safe_edit_or_reply(event, f"رصيد [{name}](tg://user?id={uid}): {pts} نقطة.")
 
-@zedub.bot_cmd(pattern=fr"^{cmhd}تصفير$")
+@zedub.bot_cmd(pattern=fr"^{cmhd}resetp$")
 async def reset_points(event):
     """إعادة جميع النقاط إلى صفر"""
     if not event.is_group:
@@ -160,6 +160,6 @@ async def reset_points(event):
     ranking = get_all_points(event.chat_id)
     if ranking:
         reset_all_points(event.chat_id)
-        await safe_edit_or_reply(event, "✅ تم تصفير جميع النقاط.")
+        await safe_edit_or_reply(event, "✅ تم إعادة تعيين جميع النقاط إلى الصفر.")
     else:
         await safe_edit_or_reply(event, "لا يوجد نقاط مسجلة حالياً.")
