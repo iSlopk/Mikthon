@@ -112,7 +112,7 @@ async def points_manage(event):
     if cmd == "/p":
         new_points = old + points
         set_points(event.chat_id, uid, new_points)
-        await safe_edit_or_reply(event, f"✅ تم إضافة {points} نقطة.\nرصيد المستخدم الآن: {new_points}")
+        await safe_edit_or_reply(event, f"✅ تم إضافة {points} نقطة.\n \n👤 المستخدم : [{name}](tg://user?id={user_id}\n🔢 عدد نقاطه : [{new_points}]")
     else:
         new_points = max(old - points, 0)
         set_points(event.chat_id, uid, new_points)
@@ -164,6 +164,6 @@ async def reset_points(event):
     ranking = get_all_points(event.chat_id)
     if ranking:
         reset_all_points(event.chat_id)
-        await safe_edit_or_reply(event, "✅ تم إعادة تعيين جميع النقاط إلى الصفر.")
+        await safe_edit_or_reply(event, "✅ تم ترسيت نقاط الشات.")
     else:
         await safe_edit_or_reply(event, "لا يوجد نقاط مسجلة حالياً.")
