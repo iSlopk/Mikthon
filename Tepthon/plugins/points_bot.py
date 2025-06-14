@@ -45,7 +45,7 @@ def set_points(chat_id, user_id, points):
 def get_all_points(chat_id):
     with get_db() as db:
         cur = db.execute(
-            "SELECT user_id, points FROM points WHERE chat_id=? ORDER BY points DESC",
+            "SELECT user_id, points FROM points WHERE chat_id=? AND points > 0 ORDER BY points DESC",
             (chat_id,)
         )
         return cur.fetchall()
