@@ -62,8 +62,8 @@ async def update_mlist_message(client, chat_id, reply_to, key):
     text = "**قـائـمـة الـمـشـرفـيـن الـحـضـور:**\n" + ("\n".join(names) if names else "_لا يوجد أحد بعد_")
     btns = [
         [
-            Button.inline("Log In 🟢", data=f"mlogin|{chat_id}|{reply_to}"),
-            Button.inline("Log Out 🔴", data=f"mlogout|{chat_id}|{reply_to}")
+            Button.inline("Log In 🟢", data=f"mlist_in|{chat_id}|{reply_to}"),
+            Button.inline("Log Out 🔴", data=f"mlist_out|{chat_id}|{reply_to}")
         ]
     ]
     try:
@@ -83,8 +83,8 @@ async def mlist_handler(event):
     text = "**قـائـمـة الـمـشـرفـيـن الـحـضـور:**\n" + ("\n".join(names) if names else "_لا يوجد أحد بعد_")
     btns = [
         [
-            Button.inline("Log In 🟢", data=f"mlogin|{chat_id}|{reply_to}"),
-            Button.inline("Log Out 🔴", data=f"mlogout|{chat_id}|{reply_to}")
+            Button.inline("Log In 🟢", data=f"mlist_in|{chat_id}|{reply_to}"),
+            Button.inline("Log Out 🔴", data=f"mlist_out|{chat_id}|{reply_to}")
         ]
     ]
     msg = await event.reply(text, buttons=btns, link_preview=False)
@@ -127,8 +127,8 @@ async def delete_later(msg):
     except Exception:
         pass
 
-@zedub.on(events.CallbackQuery(pattern=r"mlogin\|(-?\d+)\|(\d+)"))
-async def mlogin_handler(event):
+@zedub.on(events.CallbackQuery(pattern=r"mlist_in\|(-?\d+)\|(\d+)"))
+async def mlist_in_handler(event):
     chat_id = int(event.pattern_match.group(1))
     reply_to = int(event.pattern_match.group(2))
     key = (chat_id, reply_to)
@@ -141,8 +141,8 @@ async def mlogin_handler(event):
     user = await event.client.get_entity(user_id)
     await send_log(event.client, f"✅ <b>{user.first_name}</b> (<code>{user_id}</code>) قام بتسجيل الحضور.")
 
-@zedub.on(events.CallbackQuery(pattern=r"mlogout\|(-?\d+)\|(\d+)"))
-async def mlogout_handler(event):
+@zedub.on(events.CallbackQuery(pattern=r"mlist_out\|(-?\d+)\|(\d+)"))
+async def mlist_out_handler(event):
     chat_id = int(event.pattern_match.group(1))
     reply_to = int(event.pattern_match.group(2))
     key = (chat_id, reply_to)
