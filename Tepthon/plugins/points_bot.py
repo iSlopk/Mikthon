@@ -160,6 +160,6 @@ async def reset_points(event):
     ranking = get_all_points(event.chat_id)
     if ranking:
         reset_all_points(event.chat_id)
-        await safe_edit_or_reply(event, "✅ تم إعادة تعيين جميع النقاط إلى الصفر.")
+        await safe_edit_or_reply(event, "✅ تم تصفير جميع النقاط.")
     else:
         await safe_edit_or_reply(event, "لا يوجد نقاط مسجلة حالياً.")
