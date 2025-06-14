@@ -162,7 +162,7 @@ async def show_points(event):
             
         except Exception:
             name = str(uid)
-        await safe_edit_or_reply(event, f"رصيد [{name}](tg://user?id={uid}): {pts} نقطة.")
+        await safe_edit_or_reply(event, f"👤 المستخدم : [{name}](tg://user?id={uid})\n🔢 عدد النقاط : [{pts}].")
 
 @zedub.bot_cmd(pattern=fr"^{cmhd}rstp$")
 async def reset_points(event):
@@ -175,6 +175,6 @@ async def reset_points(event):
     ranking = get_all_points(event.chat_id)
     if ranking:
         reset_all_points(event.chat_id)
-        await safe_edit_or_reply(event, "✅ تم ترسيت نقاط الشات.")
+        await safe_edit_or_reply(event, "🛠🔄 تم ترسيت نقاط الشات.")
     else:
         await safe_edit_or_reply(event, "🍃 لا يوجد نقاط مسجلة حالياً.")
