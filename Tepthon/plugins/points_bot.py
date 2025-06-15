@@ -284,14 +284,16 @@ async def rename_team(event):
         )
     return await safe_edit_or_reply(event, f"✅ تم تغيير اسم الفريق من {old_name} إلى {new_name}.")
 
-@zedub.bot_cmd(pattern=fr"^(?:{ """عرض النقاط حسب الفرق"""
+@zedub.bot_cmd(pattern=fr"^(?:{ """عرض@zedub.bot_cmd(pattern=fr"^(?:{cmhd}pst)$")
+async def show_team_points(event):
+    """عرض النقاط حسب الفرق"""
     if not event.is_group:
         return await safe_edit_or_reply(event, "❗️يعمل فقط في المجموعات.")
     if not is_team_mode_active(event.chat_id):
         return await safe_edit_or_reply(event, "❗️وضع الفرق غير مفعل.")
     with get_db() as db:
         cur = db.execute(
-           """
+            """
             SELECT team_name, SUM(points) as total_points
             FROM team_members
             JOIN points ON team_members.user_id = points.user_id AND team_members.chat_id = points.chat_id
@@ -304,6 +306,6 @@ async def rename_team(event):
     if not ranking:
         return await safe_edit_or_reply(event, "🍃 لا يوجد نقاط مسجلة في الفرق.")
     text = "**📊 | نشرة النقاط حسب الفرق:**\n\n"
-    for i, (team_name, total_points) in enumerate(ranking, 1):
+    1):
         text += f"{i}.  {team_name}  [{total_points}]\n"
     return await safe_edit_or_reply(event, text)
