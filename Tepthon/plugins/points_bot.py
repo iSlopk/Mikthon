@@ -228,9 +228,10 @@ async def enable_team_mode(event):
 @zedub.bot_cmd(pattern=fr"^{cmhd}tmoff$")
 async def disable_team_mode(event):
     """تعطيل وضع الفرق والعودة إلى الوضع الأساسي"""
-    if not event.is_or_reply(event, "❗️يعمل فقط في المجموعات.")
-    TEAM_MODE_STATUS[event.chat_id] = False
-    return await safe_edit_or_reply(event, "❌ تم تعطيل وضع الفرق والعودة إلى الوضع الأساسي: عرض نقاط الأفراد.")
+    if not event.is_group:
+    return await safe_edit_or_reply(event, "❗️يعمل فقط في المجموعات.")
+TEAM_MODE_STATUS[event.chat_id] = False
+return await safe_edit_or_reply(event, "❌ تم تعطيل وضع الفرق والعودة إلى الوضع الأساسي: عرض نقاط الأفراد.")
 
 @zedub.bot_cmd(pattern=fr"^{cmhd}addt(?:\s+(.+))?$")
 async def add_team(event):
