@@ -93,6 +93,7 @@ async def points_manage(event):
     args = event.pattern_match.group(1)
     args = args.split() if args else []
     cmd = event.text.split()[0].lower().replace(cmhd, "/")
+    
     points = 1
 
     if len(args) > 1:
@@ -106,13 +107,13 @@ async def points_manage(event):
         except Exception:
             pass
       
-    async def handle_event(event, args):
-    uid = await get_user_id(event, args)
-    if uid is None:
-        return await safe_edit_or_reply(event, "يرجى تحديد المستخدم بالرد أو المنشن أو الإيدي.")
+   async def handle_event(event, args):
+      uid = await get_user_id(event, args)
+      if uid is None:
+          return await safe_edit_or_reply(event, "يرجى تحديد المستخدم بالرد أو المنشن أو الإيدي.")
 
-    old = get_points(event.chat_id, uid)
-    if cmd == "/p":
+      old = get_points(event.chat_id, uid)
+      if cmd == "/p":
         new_points = old + points
         set_points(event.chat_id, uid, new_points)
         await safe_edit_or_reply(event, f"✅ تم إضافة {points} نقطة.\n \n👤 المستخدم : [{name}](tg://user?id={user_id})\n🔢 عدد نقاطه : [{new_points}]")
