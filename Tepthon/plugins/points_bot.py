@@ -221,10 +221,13 @@ def create_team_table():
 @zedub.bot_cmd(pattern=fr"^{cmhd}tmon$")
 async def enable_team_mode(event):
     """تفعيل وضع الفرق"""
-    if not event.is_group:
-        return await safe_edit_or_reply(event, "❗️يعمل فقط في المجموعات.")
-    TEAM_MODE_STATUS[event.chat_id] = True
-    return await safe_edit_or_reply(event, "✅ تم تفعيل وضع الفرق.")
+    try:
+        if not event.is_group:
+            return await safe_edit_or_reply(event, "❗️يعمل فقط في المجموعات.")
+        TEAM_MODE_STATUS[event.chat_id] = True
+        return await safe_edit_or_reply(event, "✅ تم تفعيل وضع الفرق.")
+    except Exception as e:
+        return await safe_edit_or_reply(event, f"⚠️ حدث خطأ غير متوقع: {str(e)}")
 
 @zedub.bot_cmd(pattern=fr"^{cmhd}tmoff$")
 async def disable_team_mode(event):
