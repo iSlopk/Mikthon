@@ -146,7 +146,7 @@ async def show_points(event):
             except Exception:
                 name = str(user_id)
             text += f"{i}- [{name}](tg://user?id={user_id}) [{pts}]\n"
-        await safe_edit_or_reply(event, text)
+        return await safe_edit_or_reply(event, text)
     else:
         pts = get_points(event.chat_id, uid)
         try:
@@ -156,7 +156,7 @@ async def show_points(event):
             
         except Exception:
             name = str(uid)
-        await safe_edit_or_reply(event, f"👤 المستخدم : [{name}](tg://user?id={uid})\n🔢 عدد النقاط : [{pts}].")
+        return await safe_edit_or_reply(event, f"👤 المستخدم : [{name}](tg://user?id={uid})\n🔢 عدد النقاط : [{pts}].")
 
 @zedub.bot_cmd(pattern=fr"^{cmhd}rstp$")
 async def reset_points(event):
