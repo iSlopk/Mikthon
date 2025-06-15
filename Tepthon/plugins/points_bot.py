@@ -194,3 +194,112 @@ async def reset_points(event):
         return await safe_edit_or_reply(event, "✅ تم ترسيت نقاط الشات.")
     else:
         return await safe_edit_or_reply(event, "🍃 لا يوجد نقاط مسجلة حالياً.")
+        
+        
+        
+        
+        ########## TEAM MODE ##############
+        
+# إضافة جدول للفرق
+def create_team_table():
+    with get_db() as db:
+        db.execute("""
+        CREATE TABLE IF NOT EXISTS teams (
+            chat_id INTEGER,
+            team_name TEXT,
+            PRIMARY KEY (chat_id, team_name)
+        )""")
+        db.execute("""
+        CREATE TABLE IF NOT EXISTS team_members (
+            chat_id INTEGER,
+_id, False)
+
+@zedub.bot_cmd(pattern=fr"^{cmhd}tmon$")
+async def enable_team_mode(event):
+    """تفعيل وضع الفرق"""
+    if not event.is_group:
+        return await safe_edit_or_reply(event, "❗️يعمل فقط في المجموعات.")
+    TEAM_MODE_STATUS[event.chat_id] = True
+    return await safe_edit_or_reply(event, "✅ تم تفعيل وضع الفرق.")
+
+@zedub.bot_cmd(pattern=fr"^{cmhd}tmoff$")
+async def disable_team_mode(event):
+    """تعطيل وضع الفرق والعودة إلى الوضع الأساسي"""
+    if not event.is_or_reply(event, "❗️يعمل فقط في المجموعات.")
+    TEAM_MODE_STATUS[event.chat_id] = False
+    return await safe_edit_or_reply(event, "❌ تم تعطيل وضع الفرق والعودة إلى الوضع الأساسي: عرض نقاط الأفراد.")
+
+@zedub.bot_cmd(pattern=fr"^{cmhd}addt(?:\s+(.+))?$")
+async def add_team(event):
+    """إضافة فريق جديد"""
+    if not event.is_group:
+        return await safe_edit_or_reply(event, "❗️يعمل فقط في المجموعات.")
+    team_name = event.pattern_match.group(1)
+    if not team_name:
+        return await safe_edit_or_reply(event, "❗️يرجى تحديد اسم الفريق.")
+    with get_db() as db:
+        db.execute(
+            "INSERT OR IGNORE INTO teams (chat_id, team_name) VALUES (?, ?)",
+            (event.chat_id, team_name)
+        )
+    return await safe_edit_or_reply(event, f"✅ تم إضافة الفريق: {team_name}.")
+
+@zedub.bot_cmd(pattern=fr"^{cmhd}delt(?:\s+(.+))?$")
+async def delete_team(event):
+    """حذف فريق موجود"""
+    if not event.is_group:
+        return await safe_edit_or_reply(event, "❗️يعمل فقط في المجموعات.")
+    team_name = event.pattern_match.group(1)
+    if not team_name:
+        return await safe_edit_or_reply(event, "❗️يرجى تحديد اسم الفريق.")
+    with get_db() as db:
+        db.execute(
+            "DELETE FROM teams WHERE chat_id=? AND team_name=?",
+            (event.chat_id, team_name)
+        )
+        db.execute(
+            "DELETE FROM team_members WHERE chat_id=? AND team f"❌ تم حذف الفريق: {team_name}.")
+
+@zedub.bot_cmd(pattern=fr"^{cmhd}setnt(?:\s+(.+)\s+(.+))?$")
+async def rename_team(event):
+    """تغيير اسم فريق موجود"""
+    if not event.is_group:
+        return await safe_edit_or_reply(event, "❗️يعمل فقط في المجموعات.")
+    args = event.pattern_match.group(1, 2)
+    if not args or len(args) < 2:
+        return await safe_edit_or_reply(event, "❗️يرجى تحديد اسم الفريق القديم والجديد.")
+    old_name, new_name = args
+    with get_db() as db:
+        db.execute(
+            "UPDATE teams SET team_name=? WHERE chat_id=? AND team_name=?",
+            (new_name, event.chat_id, old_name)
+        )
+        db.execute(
+            "UPDATE team_members SET team_name=? WHERE chat_id=? AND team_name=?",
+            (new_name, event.chat_id, old_name)
+        )
+    return await safe_edit_or_reply(event, f"✅ تم تغيير اسم الفريق من {old_name} إلى {new_name}.")
+
+@zedub.bot_cmd(pattern=fr"^(?:{ """عرض النقاط حسب الفرق"""
+    if not event.is_group:
+        return await safe_edit_or_reply(event, "❗️يعمل فقط في المجموعات.")
+    if not is_team_mode_active(event.chat_id):
+        return await safe_edit_or_reply(event, "❗️وضع الفرق غير مفعل.")
+    with get_db() as db:
+        cur = db.execute(
+            """
+            SELECT team_name, SUM(points) as total_points
+            FROM team_members
+            JOIN points ON team_members.user_id = points.user_id AND team_members.chat_id = points.chat_id
+            WHERE team_members.chat_id=?
+            GROUP BY team_name ORDER BY total_points DESC
+            """,
+            (event.chat_id,)
+        )
+        ranking = cur.fetchall()
+    if not ranking:
+        return await safe_edit_or_reply(event, "🍃 لا يوجد نقاط مسجلة في الفرق.")
+    text = "**📊 | نشرة النقاط حسب الفرق:**\n\n"
+    for i, (team_name, total_points) in enumerate(ranking, 1):
+        text += f"{i}.  {team_name}  [{total_points}]\n"
+    return await safe_edit_or_reply(event, text)
