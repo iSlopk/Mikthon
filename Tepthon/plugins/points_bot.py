@@ -90,13 +90,12 @@ async def points_manage(event):
     perms = await event.client.get_permissions(event.chat_id, event.sender_id)
     if not perms.is_admin:
         return await safe_edit_or_reply(event, "❗️الأمر متاح للمشرفين فقط.")
-    args = event.pattern_match.group(1)  # تصحيح هنا
+    args = event.pattern_match.group(1) 
     args = args.split() if args else []
     cmd = event.text.split()[0].lower().replace(cmhd, "/")
     
     points = 1
 
-    # إذا كان هناك أكثر من وسيط (args) يتم تعيين النقاط بناءً على الوسيط الثاني
     if len(args) > 1:
         try:
             points = abs(int(args[1]))
