@@ -9,8 +9,8 @@ from ..sql_helper.globals import addgvar, delgvar, gvarstatus
 from pySmartDL import SmartDL
 
 
-MLIST_DATA = {}  # {(chat_id, reply_to_id): set(user_ids)}
-MLIST_MSGS = {}  # {(chat_id, reply_to_id): message_id}
+MLIST_DATA = {}  
+MLIST_MSGS = {}  
 
 plugin_category = "البوت"
 botusername = Config.TG_BOT_USERNAME
