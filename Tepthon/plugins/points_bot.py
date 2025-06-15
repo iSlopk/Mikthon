@@ -212,6 +212,8 @@ def create_team_table():
         db.execute("""
         CREATE TABLE IF NOT EXISTS team_members (
             chat_id INTEGER,
+            team_name TEXT,
+            user_id INTEGER,
             PRIMARY KEY (chat_id, team_name, user_id)
         )""")
 
