@@ -259,7 +259,10 @@ async def delete_team(event):
             (event.chat_id, team_name)
         )
         db.execute(
-            "DELETE FROM team_members WHERE chat_id=? AND team_name" f"❌ تم حذف الفريق: {team_name}.")
+    "DELETE FROM team_members WHERE chat_id=? AND team_name=?",
+    (event.chat_id, team_name)
+)
+return await safe_edit_or_reply(event, f"❌ تم حذف الفريق: {team_name}.")
 
 @zedub.bot_cmd(pattern=fr"^{cmhd}setnt(?:\s+(.+)\s+(.+))?$")
 async def rename_team(event):
@@ -288,7 +291,7 @@ async def rename_team(event):
         return await safe_edit_or_reply(event, "❗️وضع الفرق غير مفعل.")
     with get_db() as db:
         cur = db.execute(
-            """
+           """
             SELECT team_name, SUM(points) as total_points
             FROM team_members
             JOIN points ON team_members.user_id = points.user_id AND team_members.chat_id = points.chat_id
