@@ -106,8 +106,9 @@ async def points_manage(event):
             points = abs(int(args[0]))
         except Exception:
             pass
-      
-async def handle_event(event, args):
+        await handle_event(event, args, cmd, points)
+    
+async def handle_event(event, args, cmd, points):
     uid = await get_user_id(event, args)
     if uid is None:
         return await safe_edit_or_reply(event, "يرجى تحديد المستخدم بالرد أو المنشن أو الإيدي.")
