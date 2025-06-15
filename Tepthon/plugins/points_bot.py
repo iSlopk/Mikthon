@@ -135,7 +135,7 @@ async def handle_event(event, args, cmd, points):
         set_points(event.chat_id, uid, new_points)
         return await safe_edit_or_reply(
             event,
-            f"✅ تم إضافة {points} نقطة.\n👤 المستخدم : [{name}](tg://user?id={user_id})\n🔢 عدد نقاطه : [{new_points}]"
+            f"➕ تم إضافة {points} نقطة.\n👤 المستخدم : [{name}](tg://user?id={user_id})\n🔢 عدد نقاطه : [{new_points}]"
         )
     # إذا كان الأمر هو /delp يتم خصم النقاط
     else:
@@ -143,7 +143,7 @@ async def handle_event(event, args, cmd, points):
         set_points(event.chat_id, uid, new_points)
         return await safe_edit_or_reply(
             event,
-            f"❌ تم خصم {points} نقطة.\n👤 المستخدم : [{name}](tg://user?id={user_id})\n🔢 عدد نقاطه : [{new_points}]")
+            f"➖ تم خصم {points} نقطة.\n👤 المستخدم : [{name}](tg://user?id={user_id})\n🔢 عدد نقاطه : [{new_points}]")
 
 @zedub.bot_cmd(pattern=fr"^(?:{cmhd}ps|{cmhd}points)(?:\s+(.+))?$")
 async def show_points(event):
@@ -191,6 +191,6 @@ async def reset_points(event):
     ranking = get_all_points(event.chat_id)
     if ranking:
         reset_all_points(event.chat_id)
-        return await safe_edit_or_reply(event, "🛠 تم ترسيت نقاط الشات.")
+        return await safe_edit_or_reply(event, "✅ تم ترسيت نقاط الشات.")
     else:
         return await safe_edit_or_reply(event, "🍃 لا يوجد نقاط مسجلة حالياً.")
