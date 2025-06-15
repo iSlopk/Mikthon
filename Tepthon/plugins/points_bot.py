@@ -259,7 +259,7 @@ async def delete_team(event):
             (event.chat_id, team_name)
         )
         db.execute(
-            "DELETE FROM team_members WHERE chat_id=? AND team f"❌ تم حذف الفريق: {team_name}.")
+            "DELETE FROM team_members WHERE chat_id=? AND team_name" f"❌ تم حذف الفريق: {team_name}.")
 
 @zedub.bot_cmd(pattern=fr"^{cmhd}setnt(?:\s+(.+)\s+(.+))?$")
 async def rename_team(event):
