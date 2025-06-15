@@ -108,7 +108,7 @@ elif event.is_reply and args:
     except Exception:
         pass
       
-      
+ async def handle_event(event, args):
     uid = await get_user_id(event, args)
     if uid is None:
         return await safe_edit_or_reply(event, "يرجى تحديد المستخدم بالرد أو المنشن أو الإيدي.")
