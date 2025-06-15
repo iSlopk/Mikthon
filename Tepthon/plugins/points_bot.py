@@ -243,17 +243,28 @@ async def disable_team_mode(event):
 @zedub.bot_cmd(pattern=fr"^{cmhd}addt(?:\s+(.+))?$")
 async def add_team(event):
     """إضافة فريق جديد"""
-    if not event.is_group:
-        return await safe_edit_or_reply(event, "❗️يعمل فقط في المجموعات.")
-    team_name = event.pattern_match.group(1)
-    if not team_name:
-        return await safe_edit_or_reply(event, "❗️يرجى تحديد اسم الفريق.")
-    with get_db() as db:
-        db.execute(
-            "INSERT OR IGNORE INTO teams (chat_id, team_name) VALUES (?, ?)",
-            (event.chat_id, team_name)
-        )
-    return await safe_edit_or_reply(event, f"✅ تم إضافة الفريق: {team_name}.")
+    try:
+        if not event.is_group:
+            return await safe_edit_or_reply(event, "❗️يعمل فقط في المجموعات.")
+
+        team_name = event.pattern_match.group(1)
+        if not team_name:
+            return await safe_edit_or_reply(event, "❗️يرجى تحديد اسم الفريق.")
+
+        # التحقق من إنشاء الجدول مسبقاً
+        create_team_table()
+
+        with get_db() as db:
+            db.execute(
+                "INSERT OR IGNORE INTO teams (chat_id, team_name) VALUES (?, ?)",
+                (event.chat_id, team_name)
+            )
+
+        return await safe_edit_or_reply(event, f"✅ تم إضافة الفريق: {team_name}.")
+    except sqlite3.Error as db_error:
+        return await safe_edit_or_reply(event, f"⚠️ حدث خطأ في قاعدة البيانات: {str(db_error)}")
+    except Exception as e:
+        return await safe_edit_or_reply(event, f"⚠️ حدث خطأ غير متوقع: {str(e)}")
 
 @zedub.bot_cmd(pattern=fr"^{cmhd}delt(?:\s+(.+))?$")
 async def delete_team(event):
