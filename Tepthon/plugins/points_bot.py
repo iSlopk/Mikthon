@@ -102,7 +102,7 @@ async def points_manage(event):
             points = abs(int(args[1]))
         except Exception:
             pass
-    # إذا تم الرد على رسالة مع وجود وسيط، يتم تعيين النقاط بناءً على الوسيط الأول
+    
     elif event.is_reply and args:
         try:
             points = abs(int(args[0]))
