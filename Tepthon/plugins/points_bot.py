@@ -90,29 +90,36 @@ async def points_manage(event):
     perms = await event.client.get_permissions(event.chat_id, event.sender_id)
     if not perms.is_admin:
         return await safe_edit_or_reply(event, "❗️الأمر متاح للمشرفين فقط.")
-    args = event.pattern_match.group(1)
+    args = event(1)
     args = args.split() if args else []
     cmd = event.text.split()[0].lower().replace(cmhd, "/")
     
     points = 1
 
+    # إذا كان هناك أكثر من وسيط (args) يتم تعيين النقاط بناءً على الوسيط الثاني
     if len(args) > 1:
         try:
             points = abs(int(args[1]))
         except Exception:
             pass
+    # إذا تم الرد على رسالة مع وجود وسيط، يتم تعيين النقاط بناءً على الوسيط الأول
     elif event.is_reply and args:
         try:
             points = abs(int(args[0]))
         except Exception:
             pass
-        await handle_event(event, args, cmd, points)
-    
+
+    # استدعاء دالة handle_event دائماً
+    return await handle_event(event, args, cmd, points)
+
 async def handle_event(event, args, cmd, points):
+    """تنفيذ إضافة أو خصم النقاط"""
+    # الحصول على ID المستخدم المستهدف
     uid = await get_user_id(event, args)
     if uid is None:
-        return await safe_edit_or_reply(event, "يرجى تحديد المستخدم بالرد أو المنشن أو الإيدي.")
+        return await safe_edit_or_reply(event, "❗️يرجى تحديد المستخدم بالرد أو المنشن أو الإيدي.")
 
+    # محاولة الحصول على معلومات المستخدم
     try:
         user = await event.client.get_entity(uid)
         name = user.first_name + (" " + user.last_name if user.last_name else "")
@@ -120,15 +127,24 @@ async def handle_event(event, args, cmd, points):
         name = str(uid)
     user_id = uid
 
+    # الحصول على عدد النقاط الحالي
     old = get_points(event.chat_id, uid)
+
+    # إذا كان الأمر هو /p يتم إضافة النقاط
     if cmd == "/p":
         new_points = old + points
         set_points(event.chat_id, uid, new_points)
-        return await safe_edit_or_reply(event, f"✅ تم إضافة {points} نقطة.\n👤 المستخدم : [{name}](tg://user?id={user_id})\n🔢 عدد نقاطه : [{new_points}]")
+        return await safe_edit_or_reply(
+            event,
+            f"✅ تم إضافة {points} نقطة.\n👤 المستخدم : [{name}](tg://user?id={user_id})\n🔢 عدد نقاطه : [{new_points}]"
+        )
+    # إذا كان الأمر هو /delp يتم خصم النقاط
     else:
-        new_points = max(old - points, 0)
+        new_points = max(old - points, 0)  # التأكد من أن النقاط لا تصبح أقل من صفر
         set_points(event.chat_id, uid, new_points)
-        return await safe_edit_or_reply(event, f"❌ تم خصم {points} نقطة.\n👤 المستخدم : [{name}](tg://user?id={user_id})\n🔢 عدد نقاطه : [{new_points}]")
+        return await safe_edit_or_reply(
+            event,
+            f"❌ تم خصم {points} نقطة.\n👤 المستخدم : [{name}](tg://user?id={user_id})\n🔢 عدد نقاطه : [{new_points}]")
 
 @zedub.bot_cmd(pattern=fr"^(?:{cmhd}ps|{cmhd}points)(?:\s+(.+))?$")
 async def show_points(event):
