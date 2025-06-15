@@ -93,20 +93,18 @@ async def points_manage(event):
     args = event.pattern_match.group(1)
     args = args.split() if args else []
     cmd = event.text.split()[0].lower().replace(cmhd, "/")
-     
-     
-points = 1
+   points = 1
 
-if len(args) > 1:
-    try:
-        points = abs(int(args[1]))
-    except Exception:
-        pass
-elif event.is_reply and args:
-    try:
-        points = abs(int(args[0]))
-    except Exception:
-        pass
+   if len(args) > 1:
+       try:
+          points = abs(int(args[1]))
+       except Exception:
+           pass
+   elif event.is_reply and args:
+       try:
+          points = abs(int(args[0]))
+       except Exception:
+           pass
       
  async def handle_event(event, args):
     uid = await get_user_id(event, args)
