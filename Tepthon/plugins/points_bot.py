@@ -94,18 +94,20 @@ async def points_manage(event):
     args = args.split() if args else []
     cmd = event.text.split()[0].lower().replace(cmhd, "/")
      
-       points = 1
+     
+points = 1
 
-     if len(args) > 1:
-       try:
-           points = abs(int(args[1]))
-       except Exception:
-           pass
-     elif event.is_reply and args:
-       try:
-           points = abs(int(args[0]))
+if len(args) > 1:
+    try:
+        points = abs(int(args[1]))
     except Exception:
         pass
+elif event.is_reply and args:
+    try:
+        points = abs(int(args[0]))
+    except Exception:
+        pass
+      
       
     uid = await get_user_id(event, args)
     if uid is None:
