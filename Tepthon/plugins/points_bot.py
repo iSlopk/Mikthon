@@ -212,7 +212,8 @@ def create_team_table():
         db.execute("""
         CREATE TABLE IF NOT EXISTS team_members (
             chat_id INTEGER,
-_id, False)
+            PRIMARY KEY (chat_id, team_name, user_id)
+        )""")
 
 @zedub.bot_cmd(pattern=fr"^{cmhd}tmon$")
 async def enable_team_mode(event):
