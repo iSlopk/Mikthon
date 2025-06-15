@@ -302,10 +302,10 @@ async def show_team_points(event):
             """,
             (event.chat_id,)
         )
-        ranking = cur.fetchall()
-    if not ranking:
-        return await safe_edit_or_reply(event, "🍃 لا يوجد نقاط مسجلة في الفرق.")
-    text = "**📊 | نشرة النقاط حسب الفرق:**\n\n"
+    ranking = cur.fetchall()
+if not ranking:
+    return await safe_edit_or_reply(event, "🍃 لا يوجد نقاط مسجلة في الفرق.")
+text = "**📊 | نشرة النقاط حسب الفرق:**\n\n"
 for i, (team_name, total_points) in enumerate(ranking, 1):
     text += f"{i}- {team_name} [{total_points}]\n"
-    return await safe_edit_or_reply(event, text)
+return await safe_edit_or_reply(event, text)
