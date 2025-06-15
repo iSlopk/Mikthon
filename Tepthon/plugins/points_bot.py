@@ -107,13 +107,13 @@ async def points_manage(event):
         except Exception:
             pass
       
-   async def handle_event(event, args):
-      uid = await get_user_id(event, args)
-      if uid is None:
-          return await safe_edit_or_reply(event, "يرجى تحديد المستخدم بالرد أو المنشن أو الإيدي.")
+async def handle_event(event, args):
+    uid = await get_user_id(event, args)
+    if uid is None:
+        return await safe_edit_or_reply(event, "يرجى تحديد المستخدم بالرد أو المنشن أو الإيدي.")
 
-      old = get_points(event.chat_id, uid)
-      if cmd == "/p":
+    old = get_points(event.chat_id, uid)
+    if cmd == "/p":
         new_points = old + points
         set_points(event.chat_id, uid, new_points)
         await safe_edit_or_reply(event, f"✅ تم إضافة {points} نقطة.\n \n👤 المستخدم : [{name}](tg://user?id={user_id})\n🔢 عدد نقاطه : [{new_points}]")
