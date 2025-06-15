@@ -106,7 +106,7 @@ async def points_manage(event):
             points = abs(int(args[0]))
         except Exception:
             pass
-        await handle_event(event, args)
+        await handle_event(event, args, cmd, points)
     
 async def handle_event(event, args):
     uid = await get_user_id(event, args)
