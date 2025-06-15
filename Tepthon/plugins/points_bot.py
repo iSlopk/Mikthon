@@ -302,7 +302,7 @@ async def show_team_points(event):
             """,
             (event.chat_id,)
         )
-    ranking = cur.fetchall()
+        ranking = cur.fetchall()
 if not ranking:
     return await safe_edit_or_reply(event, "🍃 لا يوجد نقاط مسجلة في الفرق.")
 text = "**📊 | نشرة النقاط حسب الفرق:**\n\n"
