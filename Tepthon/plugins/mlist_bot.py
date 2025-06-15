@@ -16,6 +16,17 @@ plugin_category = "البوت"
 botusername = Config.TG_BOT_USERNAME
 cmhd = Config.COMMAND_HAND_LER
 
+async def get_topic_by_name(client, chat_id, topic_name):
+    """البحث عن موضوع داخل المجموعة بناءً على اسمه."""
+    try:
+        dialogs = await client(functions.messages.GetDialogFiltersRequest())
+        for dialog in dialogs.dialogs:
+            if dialog.peer.channel_id == chat_id and dialog.title == topic_name:
+                return dialog.id
+    except Exception as e:
+        logging.warning(f"خطأ أثناء البحث عن الموضوع: {str(e)}")
+    return None
+
 
 async def get_names(client, user_ids):
     names = []
