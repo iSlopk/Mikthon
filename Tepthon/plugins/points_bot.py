@@ -108,10 +108,17 @@ async def points_manage(event):
             pass
         await handle_event(event, args, cmd, points)
     
-async def handle_event(event, args):
+async def handle_event(event, args, cmd, points):
     uid = await get_user_id(event, args)
     if uid is None:
         return await safe_edit_or_reply(event, "يرجى تحديد المستخدم بالرد أو المنشن أو الإيدي.")
+
+    try:
+        user = await event.client.get_entity(uid)
+        name = user.first_name + (" " + user.last_name if user.last_name else "")
+    except Exception:
+        name = str(uid)
+    user_id = uid
 
     old = get_points(event.chat_id, uid)
     if cmd == "/p":
