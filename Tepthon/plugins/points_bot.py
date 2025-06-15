@@ -8,6 +8,7 @@ from ..Config import Config
 from ..core.managers import edit_or_reply
 
 plugin_category = "بوت النقاط"
+TEAM_MODE_STATUS = {}
 cmhd = Config.COMMAND_HAND_LER
 
 DB_PATH = "points_db.sqlite"
