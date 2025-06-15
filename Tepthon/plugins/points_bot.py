@@ -284,7 +284,7 @@ async def rename_team(event):
         )
     return await safe_edit_or_reply(event, f"✅ تم تغيير اسم الفريق من {old_name} إلى {new_name}.")
 
-@zedub.bot_cmd(pattern=fr"^(?:{ """عرض@zedub.bot_cmd(pattern=fr"^(?:{cmhd}pst)$")
+@zedub.bot_cmd(pattern=fr"^{cmhd}pst$")
 async def show_team_points(event):
     """عرض النقاط حسب الفرق"""
     if not event.is_group:
