@@ -156,3 +156,13 @@ async def mlogout_handler(event):
         user = await event.client.get_entity(user_id)
     else:
         await event.answer("أنت لست ضمن القائمة!", alert=False)
+        
+    
+    topic_id = await get_topic_id_by_name(event.client, event.chat_id, "Mlist Log")
+    if topic_id:
+        await event.client.send_message(
+            entity=event.chat_id,
+            message=f"👤 **المستخدم** : [{user.first_name}](tg://user?id={user.id})\n 🔴 سجل خروجه الآن.",
+            reply_to=None,
+            thread_id=topic_id
+        )
