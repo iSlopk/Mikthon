@@ -17,6 +17,17 @@ botusername = Config.TG_BOT_USERNAME
 cmhd = Config.COMMAND_HAND_LER
 
 
+async def get_topic_id_by_name(client, chat_id, topic_name):
+    try:
+        topics = await client(functions.messages.GetForumTopicsRequest(peer=chat_id, q=topic_name, offset_date=0, offset_id=0, offset_topic=0, limit=100))
+        for topic in topics.topics:
+            if topic.title == topic_name:
+                return topic.id
+    except Exception:
+        pass
+    return None
+    
+    
 async def get_names(client, user_ids):
     names = []
     for uid in user_ids:
@@ -77,6 +88,15 @@ async def mlist_in(event):
     asyncio.create_task(delete_later(msg))
     user = await event.client.get_entity(user_id)
 
+    user = await event.client.get_entity(user_id)
+    topic_id = await get_topic_id_by_name(event.client, event.chat_id, "Mlist Log")
+    if topic_id:
+        await event.client.send_message(
+            entity=event.chat_id,
+            message=f"👤 **المستخدم** : [{user.first_name}](tg://user?id={user.id})\n 🟢 سجل حضوره الآن.",
+            reply_to=None,
+            thread_id=topic_id
+        )
 
 @zedub.bot_cmd(pattern="^/out$")
 async def mlist_out(event):
