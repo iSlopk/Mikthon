@@ -73,7 +73,7 @@ class Config(object):
     CUSTOM_PMPERMIT = os.environ.get("CUSTOM_PMPERMIT", None)
     ZELZAL_Z = int(2198209125)
     PING_TEXT = os.environ.get("PING_TEXT", None)
-    ZELZAL_A = os.environ.get("ZELZAL_A", "@Tepthonao")
+    ZELZAL_A = os.environ.get("ZELZAL_A", "@slopk")
     ALIVE_PIC = os.environ.get("ALIVE_PIC", None)
     BOT_PIC = os.environ.get("BOT_PIC", None)
     ZED_MEDIA = os.environ.get("ZED_MEDIA", None)
