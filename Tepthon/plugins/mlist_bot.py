@@ -111,6 +111,16 @@ async def mlist_out(event):
 
     else:
         msg = await event.reply("أنت لست ضمن القائمة!")
+    topic_id = await get_topic_id_by_name(event.client, event.chat_id, "Mlist Log")
+    if topic_id:
+        await event.client.send_message(
+            entity=event.chat_id,
+            message=f"👤 **المستخدم** : [{user.first_name}](tg://user?id={user.id})\n 🔴 سجل خروجه الآن.",
+            reply_to=None,
+            thread_id=topic_id
+        )
+
+
         asyncio.create_task(delete_later(msg))
 
 async def delete_later(msg):
