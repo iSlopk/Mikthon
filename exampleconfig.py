@@ -10,6 +10,6 @@ class Development(Config):
     STRING_SESSION = "كود تيرمــكس"
     TG_BOT_TOKEN = "توكـن البـوت الخـاص بك"
     PRIVATE_GROUP_BOT_API_ID = -100  # ضـع ايـدي كـروب السجـل بجـانب العـدد -100 لا تمسـح العـدد هـذا
-    COMMAND_HAND_LER = "."  # اتركهــا كمـا هـي
-    SUDO_COMMAND_HAND_LER = "."  # اتركهــا كمـا هـي
+    COMMAND_HAND_LER = "-"  # اتركهــا كمـا هـي
+    SUDO_COMMAND_HAND_LER = "-"  # اتركهــا كمـا هـي
     TZ = "Asia/Riyadh"  # اتركهــا كمـا هـي
