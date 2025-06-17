@@ -87,8 +87,6 @@ async def mlist_in(event):
     msg = await event.reply("تم تسجيل حضورك ✅")
     asyncio.create_task(delete_later(msg))
     user = await event.client.get_entity(user_id)
-
-    user = await event.client.get_entity(user_id)
     topic_id = await get_topic_id_by_name(event.client, event.chat_id, "Mlist Log")
     if topic_id:
         await event.client.send_message(
@@ -134,6 +132,14 @@ async def mlogin_handler(event):
     await update_mlist_message(event.client, chat_id, reply_to, key)
     await event.answer("تم تسجيل حضورك ✅", alert=False)
     user = await event.client.get_entity(user_id)
+    topic_id = await get_topic_id_by_name(event.client, event.chat_id, "Mlist Log")
+    if topic_id:
+        await event.client.send_message(
+            entity=event.chat_id,
+            message=f"👤 **المستخدم** : [{user.first_name}](tg://user?id={user.id})\n 🟢 سجل حضوره الآن.",
+            reply_to=None,
+            thread_id=topic_id
+        )
 
 @zedub.tgbot.on(events.CallbackQuery(pattern=r"mlogout\|(-?\d+)\|(\d+)"))
 async def mlogout_handler(event):
