@@ -12,4 +12,4 @@ class Development(Config):
     PRIVATE_GROUP_BOT_API_ID = -100  # ضـع ايـدي كـروب السجـل بجـانب العـدد -100 لا تمسـح العـدد هـذا
     COMMAND_HAND_LER = "."  # اتركهــا كمـا هـي
     SUDO_COMMAND_HAND_LER = "."  # اتركهــا كمـا هـي
-    TZ = "Asia/Baghdad"  # اتركهــا كمـا هـي
+    TZ = "Asia/Riyadh"  # اتركهــا كمـا هـي
