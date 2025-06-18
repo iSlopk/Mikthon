@@ -66,10 +66,12 @@ async def log_tagged_messages(event):
         ):
             return
         full = None
-        try:
-            full = await event.client.get_entity(event.message.from_id)
-        except Exception as e:
-            LOGS.info(str(e))
+        if getattr(event.message, "from_id", None):
+            try:
+                full = await event.client.get_entity(event.message.from_id)
+            except Exception as e:
+                LOGS.info(str(e))
+            
         messaget = await media_type(event)
         resalt = f"#التــاكــات\n\n<b>¶ معـلومـات المجمـوعـة :</b>"
         resalt += f"\n<b>⌔ الاسـم : </b> {hmm.title}"
