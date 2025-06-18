@@ -25,12 +25,6 @@ services:
         sync: false
       - key: TG_BOT_TOKEN
         sync: false
-      - key: PRIVATE_GROUP_BOT_API_ID
-        sync: false
-      - key: PRIVATE_GROUP_ID 
-        sync: false 
-      - key: PRIVATE_CHANNEL_BOT_API_ID
-        sync: false
       - key: TZ
         value: Asia/Riyadh
       - key: PYTHON_VERSION
