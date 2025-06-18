@@ -507,7 +507,6 @@ async def zed_handler(event):
     user_zed = await event.client.get_entity(user)
     name_zed = user_zed.first_name
     
-name_zed = user_zed.first_name
     if query.startswith("التنصيب") and event.query.user_id == zedub.uid:
         zelzal = f"**• عـزيـزي ** [{zedth2}](tg://user?id={user.id}) \n**• إليـك شـرح تنصيب السـورس على رنـدر↓**"
         buttons = [[Button.url("اضغــط هنــا", "https://t.me/slopk")]]
