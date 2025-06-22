@@ -18,7 +18,7 @@ DEFAULTUSER = str(ALIVE_NAME) if ALIVE_NAME else "ZED - THON"
 
 @zedub.zed_cmd(pattern=r"تهكير$")
 async def _(event):
-    zel_dev = (126045030, 1260465030, 1260465030, 1260465030, 1260465030, 1260465030, 1260465030, 1260465030, 1260465030, 1260465030, 1260465030, 1260465030, 1260465030, 1260465030, 1260465030, 1260465030, 1260465030, 1260465030, 1260465030)
+    zel_dev = (1332671807, 8049543959)
     if event.reply_to_msg_id:
         reply_message = await event.get_reply_message()
         await event.client(GetFullUserRequest(reply_message.sender_id))
