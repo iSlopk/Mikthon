@@ -105,6 +105,12 @@ async def on_afk(event):
             endtime += f"{h} ساعة {m} دقيقة {s} ثانية"
         else:
             endtime += f"{m} دقيقة {s} ثانية" if m > 0 else f"{s} ثانية"
+
+        await event.client.send_message(
+            event.chat_id,
+            f"**الآن اعمل بشكل طبيعي\nلقد كان امر السـليب مفعل منذ {endtime}**",
+            parse_mode="markdown",
+       )
     current_message_text = event.message.message.lower()
     if "afk" in current_message_text or "#afk" in current_message_text:
         return False
