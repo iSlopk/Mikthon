@@ -77,6 +77,9 @@ async def mlist_in(event):
     asyncio.create_task(delete_later(msg))
     user = await event.client.get_entity(user_id)
 
+    else:
+        msg = await event.reply("أنت لست ضمن القائمة!")
+        asyncio.create_task(delete_later(msg))
 
 @zedub.bot_cmd(pattern="^/out$")
 async def mlist_out(event):
@@ -114,6 +117,10 @@ async def mlogin_handler(event):
     await update_mlist_message(event.client, chat_id, reply_to, key)
     await event.answer("تم تسجيل حضورك ✅", alert=False)
     user = await event.client.get_entity(user_id)
+
+    else:
+        msg = await event.reply("أنت لست ضمن القائمة!")
+        asyncio.create_task(delete_later(msg))
 
 @zedub.tgbot.on(events.CallbackQuery(pattern=r"mlogout\|(-?\d+)\|(\d+)"))
 async def mlogout_handler(event):
