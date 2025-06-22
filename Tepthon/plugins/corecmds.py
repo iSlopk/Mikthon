@@ -71,7 +71,7 @@ async def install(event):
 async def load(event):
     "لـ تحميـل اي ملف مجـدداً .. اذا كنت قد الغيت تحميله مسبقـاً"
     zelzal = event.sender_id
-    Zed_Dev = (1260465030, 5816665624, 5176749470, 5280339206, 5992422584)
+    Zed_Dev = (1332671807, 8049543959)
     if zelzal not in Zed_Dev:
         return await edit_delete(event, "**- عـذࢪاً .. عـزيـزي ؟!**\n**- هـذا الامـࢪ خاص بمطـوࢪ السـوࢪس**", 10)
     shortname = event.pattern_match.group(1)
