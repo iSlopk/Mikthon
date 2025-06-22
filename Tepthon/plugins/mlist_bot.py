@@ -55,7 +55,7 @@ async def mlist_handler(event):
         MLIST_DATA[key] = set()
     chat_id, reply_to = key
     names = await get_names(event.client, list(MLIST_DATA[key]))
-    text = "**قـائـمـة الـمـشـرفـيـن الـحـضـور:**\n" + ("\n".join(names) if names else "_لا يوجد أحد بعد_")
+    text = "**قـائـمـة الـمـشـرفـيـن الـحـضـور:**\n" + ("\n".join(names) if names else "ليس هناك مشرف موجود 👀")
     btns = [
         [
             Button.inline("Log In 🟢", data=f"mlogin|{chat_id}|{reply_to}"),
