@@ -28,7 +28,7 @@ auth_url = r["auth_url"]
 
 
 @zedub.zed_cmd(
-    pattern="ctg(?: |$)([\s\S]*)",
+    pattern="ctg(?:تلكراف|$)([\s\S]*)",
     command=("ctg", plugin_category),
     info={
         "header": "Reply to link To get link preview using telegrah.s.",
